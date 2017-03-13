@@ -54,10 +54,7 @@ def comparer_des(des_attaquant, des_defenseur):
     """
     nbr_morts_attaquant = 0
     nbr_morts_defenseur = 0
-    if len(des_attaquant) < len(des_defenseur):
-        nbr_des_min = len(des_attaquant)
-    else:
-        nbr_des_min = len(des_defenseur)
+    nbr_des_min = len(des_attaquant) if len(des_attaquant) < len(des_defenseur) else len(des_defenseur)
     for num_de in range(nbr_des_min):
         if des_attaquant[num_de] > des_defenseur[num_de]:
             nbr_morts_defenseur += 1
