@@ -5,6 +5,14 @@ class Map:
         self.height = height
         self.map = self.create_map()
 
+    def __iter__(self):
+        iterator = []
+        for h in range(self.height - 1):
+            for l in range(self.width - 1):
+                iterator.append(self.map[l][h])
+            iterator.append("\n")
+        return iter(iterator)
+
     def get_width(self):
         return self.width
 
@@ -20,16 +28,23 @@ class Map:
     def get_map(self):
         return self.map
 
-    def afficher_matrice(self):
-        pass
+    def print_map(self):
+        print(' ', end='')
+        for case in self:
+            print(case + ' ', end='', sep='')
 
     def set_map(self, new_map):
         self.map = new_map
 
     def create_map(self):
-        return [['*' for n in range(self.height)] for i in range(self.width)]
+        return [['M' for n in range(self.height)] for i in range(self.width)]
+
+    @staticmethod
+    def clear():
+        from os import system
+        system("cls")
 
 
 if __name__ == '__main__':
     test = Map(15, 7)
-    test.afficher_matrice()
+    test.print_map()
