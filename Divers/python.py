@@ -22,7 +22,7 @@ def premier(vmax):
     fin = time()
     # duree = ("Durée :" + str(round(fin - debut, 3)) + "secondes")
     duree = str(fin - debut)
-    return {"premiers": premiers, "duree": duree}
+    return {"premiers": premiers[2:], "duree": duree}
 
 
 def pourcentage_premiers(val):
@@ -66,5 +66,6 @@ def aleatoire():
 #     print(i, a.count(i))
 # print(len(a))
 
-a=premier(1000000)
+a = premier(1000000)
+print(a["premiers"])
 print(a["duree"])
