@@ -1,43 +1,44 @@
 class Map:
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, filling='M', border='B'):
         self.width = width
         self.height = height
+        self.border_type = border
+        self.filling_type = filling
         self.map = self.create_map()
 
     def __iter__(self):
         iterator = []
-        for h in range(self.height - 1):
-            for l in range(self.width - 1):
-                iterator.append(self.map[l][h])
-            iterator.append("\n")
+        for h in range(self.height):
+            for l in range(self.width):
+                iterator.append({
+                    "case": self.map[l][h],
+                    "is_top_border": True if h == 0 else False,
+                    "is_left_border": True if l == 0 else False,
+                    "is_bottom_border": True if h == self.height-1 else False,
+                    "is_right_border": True if l == self.width-1 else False
+                })
         return iter(iterator)
 
-    def get_width(self):
-        return self.width
+    def __getitem__(self, pos):
+        index1, index2 = pos
+        return self.map[index1][index2]
 
-    def set_width(self, new_width):
-        self.width = new_width
-
-    def get_height(self):
-        return self.height
-
-    def set_height(self, new_height):
-        self.height = new_height
-
-    def get_map(self):
-        return self.map
+    def __setitem__(self, key, value):
+        index1, index2 = key
+        self.map[index1][index2] = value
 
     def print_map(self):
-        print(' ', end='')
+        print('')
         for case in self:
-            print(case + ' ', end='', sep='')
-
-    def set_map(self, new_map):
-        self.map = new_map
+            print(case["case"] + ' ', end='\n' if case["is_right_border"] else '', sep='')
 
     def create_map(self):
-        return [['M' for n in range(self.height)] for i in range(self.width)]
+        return [[self.filling_type for h in range(self.height)] for l in range(self.width)]
+
+    def create_border(self):
+        for case in self:
+            a = len([case[clef] for clef in case if not case[clef] and clef != "case"])
 
     @staticmethod
     def clear():
@@ -47,4 +48,6 @@ class Map:
 
 if __name__ == '__main__':
     test = Map(15, 7)
+    test[2, 3] = "P"
     test.print_map()
+    print(test[2, 3])
