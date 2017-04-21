@@ -3,21 +3,16 @@ from time import time
 
 
 def chronometre(function):
-    def decorated():
+    def decorated(*param):
         debut = time()
-        res = function()
+        res = function(*param)
         print("Temps d'execution de la fonction", str(function).split()[1], ":", round(time() - debut, 3), "secondes")
         return res
     return decorated
 
 
 @chronometre
-def fonction():
-    print("fonction")
+def premier(vmax):
+    return sdf(vmax)
 
-
-@chronometre
-def premier():
-    return sdf()
-
-print(premier())
+print(premier(9875))

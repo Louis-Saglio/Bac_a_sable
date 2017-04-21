@@ -1,5 +1,4 @@
-def premier():
-    vmax = 10000
+def premier(vmax):
     from math import sqrt
     # compteur = 0
     premiers = []
