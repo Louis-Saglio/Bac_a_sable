@@ -1,6 +1,8 @@
 from carte import Case
-from decorateurs import monsieur
+from decorateurs import monsieur, chronometre
 from random import choice
+from time import time
+from fonctions import intermingle
 
 
 class Carte:
@@ -30,11 +32,21 @@ class Joueur:
         assert nom in Carte.cartes_possibles["suspect"]
         self.nom = nom
         self.position = Joueur.positions_initiales[self.nom]
+        # todo test.cartes_connu(es) à transformer en dictionnaire avec de joueurs comme clef
+        self.cartes_connu = []
+
+    def __str__(self):
+        return '\n'.join(['\t'.join([str(val) for val in [clef.ljust(max([len(key) for key in self.__dict__])), valeur]]) for clef, valeur in self.__dict__.items()])
+
+    def choisir(self, quoi):
+        for carte in intermingle([Carte.cartes_possibles[quoi]]):
+            if carte not in self.cartes_connu:
+                print(Carte.cartes_possibles[quoi])
+                return carte
 
 
-if __name__ == '__main__':
-    from time import time
-    debut = time()
+@chronometre
+def tests():
 
     @monsieur
     def carte(nbr_tests):
@@ -48,12 +60,18 @@ if __name__ == '__main__':
     @monsieur
     def joueur(nbr_tests):
         test = Joueur("moutarde")
+        assert Joueur.positions_initiales[test.nom] == test.position
+        temp = choice([key for key in Carte.cartes_possibles])
+        assert test.choisir(temp) in Carte.cartes_possibles[temp]
         try:
-            test = Carte(choice(Carte.cartes_possibles["suspect"]))
+            test = Joueur(choice(Carte.cartes_possibles["suspect"]))
         except ValueError:
             pass
 
     carte(10)
     joueur(10)
 
-    print("\nLes tests ont été passés en", round(time() - debut, 3), "secondes")
+if __name__ == '__main__':
+    tests()
+    a = Joueur("rose")
+    print(a)
