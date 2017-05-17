@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Bac_a_sable.iml" filepath="$PROJECT_DIR$/.idea/Bac_a_sable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Cluédo/.idea/Cluédo.iml" filepath="$PROJECT_DIR$/Cluédo/.idea/Cluédo.iml" />
+    </modules>
+  </component>
+</project>
