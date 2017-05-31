@@ -1,4 +1,6 @@
 from random import randint
+import turtle
+from tkinter import *
 
 
 # noinspection PyShadowingNames
@@ -32,20 +34,11 @@ class Case:
         a, b, x, y = self.coordinates + case.coordinates
         return ((a - x) ** 2 + (b - y) ** 2) ** (1 / 2)
 
-    def find_nearest_equal_case(self):
-        for case in self.owning_map:
-            if case.value == self.value and case != self:
-                try:
-                    if self.get_distance_with(case) < self.get_distance_with(rep):
-                        rep = case
-                except NameError:
-                    rep = case
-        return rep
-
 
 class Map:
 
     def __init__(self, width, height, filling='M', border='B'):
+        self.nodes = []
         self.width = width
         self.height = height
         self.border_type = border
@@ -84,6 +77,10 @@ class Map:
     def get_random_case(self):
         return self[randint(0, self.width-1), randint(0, self.height-1)]
 
+    def create_random_nodes(self, nbr, node_value="N"):
+        for n in range(nbr):
+            self.nodes.append(Node(self.get_random_case(), node_value))
+
 
 class Pawn:
 
@@ -97,6 +94,7 @@ class Pawn:
         self.look = look
         self.owning_map = owning_map
         self._case = self.owning_map[self.position]
+        self.owning_map[self.position] = self
 
     def __str__(self):
         return str(self.look)
@@ -118,16 +116,49 @@ class Pawn:
     def move(self, direction):
         directions = {"up": (0, -1), "down": (0, 1), "right": (1, 0), "left": (-1, 0)}
         self.owning_map[self.position] = self.case
-        self.position = (self.position[0]+directions[direction][0], self.position[1]+directions[direction][1])
+        self.position = self.position[0]+directions[direction][0], self.position[1]+directions[direction][1]
+
+
+class Node:
+
+    def __init__(self, case: Case, value='N'):
+        self.case = case
+        self.value = value
+        self.linkeds = []
+        self.case.owning_map[case.coordinates] = self
+
+    def __str__(self):
+        return str(self.value)
+
+    def get_nearest_nodes(self, nbr: int):
+        def key(val: Node):
+            return val.case.get_distance_with(self.case)
+        rep = []
+        for node in self.case.owning_map.nodes:
+            if node != self:
+                rep.append(node)
+        return sorted(rep, key=key)[:nbr:]
+
+    def link_with(self, node):
+        if node not in self.linkeds:
+            self.linkeds.append(node)
+        if self not in node.linkeds:
+            node.linkeds.append(self)
+
+    def auto_link(self, nbr_links: int):
+        for node in self.get_nearest_nodes(nbr_links):
+            self.link_with(node)
+
+    def get_distance_with(self, node):
+        return self.case.get_distance_with(node.case)
 
 
 if __name__ == '__main__':
     from time import time
-    x, y, a, b = 10, 6, 2, 3
     debut = time()
-    test = Map(x, y)
+    test = Map(10, 6)
     test.create_border()
-    test[a, b] = "P"
+    test[2, 3] = "P"
     pawn = Pawn(test, (5, 4), "O")
     pawn.move("up")
     pawn.move("left")
@@ -136,12 +167,26 @@ if __name__ == '__main__':
     pawn.move("right")
     pawn.move("up")
     print(test)
-    test = Map(x, y, ".")
-    for i in range(4):
-        test.get_random_case().value = "S"
-    la_case = test.get_random_case()
-    la_case.value = "S"
-    la_case.find_nearest_equal_case().value = "G"
-    la_case.value = "X"
+    test = Map(15, 7, ".")
+    test.create_random_nodes(8)
+    for node in test.nodes:
+        node.auto_link(2)
+    for node in test.nodes:
+        for n in node.linkeds:
+            n.value = "M"
+    casse = True
+    # node = test.nodes[0]
+    # while True:
+    #     for n in node.linkeds:
+    #         if n.value == "N":
+    #             casse = True
+    #         else:
+    #             n.value = "N"
+    #             casse = False
+    #             node = n
+    #             break
+    #     if casse:
+    #         break
+    
     print(test)
     print("Tests executés en", round(time()-debut, 3), "seconde(s) avec succès.")

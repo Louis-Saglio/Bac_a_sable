@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Bac_a_sable.iml" filepath="$PROJECT_DIR$/.idea/Bac_a_sable.iml" />
       <module fileurl="file://$PROJECT_DIR$/Cluédo/.idea/Cluédo.iml" filepath="$PROJECT_DIR$/Cluédo/.idea/Cluédo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Map_module/.idea/Map_module.iml" filepath="$PROJECT_DIR$/../Map_module/.idea/Map_module.iml" />
     </modules>
   </component>
 </project>

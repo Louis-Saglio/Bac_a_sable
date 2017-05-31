@@ -1,4 +1,4 @@
-from map_module import Map
+from module.map_module import Map
 
 
 plan = Map(40, 10)
