@@ -1,0 +1,16 @@
+{
+    "nom" : "MeshowRandom",
+
+    "chansons" : [
+        {
+            "titre" : "Best Improvisation Ever 2",
+            "auteur" : "David Meshow",
+            "note" : 5
+        },
+        {
+            "titre" : "My Theory",
+            "auteur" : "David Meshow",
+            "note" : 4
+        }
+    ]
+}
