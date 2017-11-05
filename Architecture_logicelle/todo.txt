@@ -1,0 +1,6 @@
+Mother
+    add_child(Any child, str field_name)
+        "Ajoute child à self.field_name"
+
+    find_item_from_child_list_field_by_field(str list_field_name, str child_field_name, Any matching_value)
+        "Renvoi le premier objet tel trouvé dans la liste self.list_field_name dont l'attribut child_field_name égal matching_value"

@@ -1,4 +1,5 @@
 import random
+from os import system
 from pprint import pprint
 
 DEFENSEUR = "Defenseur"
@@ -21,74 +22,83 @@ class Armee:
         :type des tuple
         :type role str
         """
+        self.nbr_initial = nbr
         self.nbr = nbr
         self.ennemi = ennemi
-        self.des = des
-        self.delta = random.randint(8, 9)
-        self.role = role
-        self.nbr_morts = 0
-        self.nbr_des = 0
-        self.statut = None
+        self._des = des
+        self.delta = 9
+        self._role = role
+        self._nbr_morts = None
+        self._nbr_des = None
+        self._statut = None
+
+    @property
+    def statut(self):
+        return self._statut
 
     def choisir_nbr_des(self):
-        if self.role is ATTAQUANT:
-            if self.nbr > 3:
-                self.nbr_des = 3
-            elif self.nbr < 2:
-                self.nbr_des = self.nbr
+        if self._role is ATTAQUANT:
+            if self.nbr > 2:
+                self._nbr_des = 3
+            elif self.nbr <= 2:
+                self._nbr_des = self.nbr - 1
             else:
                 raise ArmyError(f"Une armée doit être composée d'au moins 2 unités pour attaquer. Essayé {self.nbr}")
-        elif self.role is DEFENSEUR:
-            if (sum(self.ennemi.des) < self.delta) and self.nbr > 1:
-                self.nbr_des = 2
-            elif (sum(self.ennemi.des) >= self.delta) or self.nbr == 1:
-                self.nbr_des = 1
+        elif self._role is DEFENSEUR:
+            if (sum(self.ennemi._des) < self.delta) and self.nbr > 1:
+                self._nbr_des = 2
+            elif (sum(self.ennemi._des) >= self.delta) or self.nbr == 1:
+                self._nbr_des = 1
             else:
                 raise ArmyError(f"{self.__dict__}{self.ennemi.des}")
         else:
-            raise NotImplementedError(f"Rôle non géré : {self.role}")
+            raise NotImplementedError(f"Rôle non géré : {self._role}")
 
     def lancer_des(self):
-        self.des = [random.randint(1, 6) for _ in range(self.nbr_des)]
-        self.des.sort(reverse=True)
-        return self.des
+        self._des = [random.randint(1, 6) for _ in range(self._nbr_des)]
+        self._des.sort(reverse=True)
+        return self._des
 
     def compter_morts(self):
         # Todo Standardiser sur le model de manage_statut()
-        self.nbr_morts = 0
-        for son_de, de_ennemi in zip(self.des, self.ennemi.des):
-            if self.role is ATTAQUANT:
+        self._nbr_morts = 0
+        for son_de, de_ennemi in zip(self._des, self.ennemi._des):
+            if self._role is ATTAQUANT:
                 if son_de <= de_ennemi:
-                    self.nbr_morts += 1
-            elif self.role is DEFENSEUR:
+                    self._nbr_morts += 1
+            elif self._role is DEFENSEUR:
                 if son_de < de_ennemi:
-                    self.nbr_morts += 1
+                    self._nbr_morts += 1
             else:
-                raise NotImplementedError(f"Role non géré {self.role}")
+                raise NotImplementedError(f"Role non géré {self._role}")
 
     def enregistrer_morts(self):
-        self.nbr -= self.nbr_morts
+        self.nbr -= self._nbr_morts
         self.manage_statut()
 
     def manage_statut(self):
-        if self.role is ATTAQUANT and self.nbr == 1:
-            self.statut = PERDANT
-            self.ennemi.statut = GAGNANT
-        elif self.role is DEFENSEUR and self.nbr == 0:
-            self.statut = PERDANT
-            self.ennemi.statut = GAGNANT
+        if self._role is ATTAQUANT and self.nbr == 1:
+            self._statut = PERDANT
+            self.ennemi._statut = GAGNANT
+        elif self._role is DEFENSEUR and self.nbr == 0:
+            self._statut = PERDANT
+            self.ennemi._statut = GAGNANT
 
-    def attaquer(self, other=None):
+    def initialise_attaque(self, other):
         """
         :type other Armee
         """
-        if other.ennemi is not None:
-            self.ennemi = other
+        self.ennemi = other
+        self.ennemi.ennemi = self
+        self._role = ATTAQUANT
+        self.ennemi._role = DEFENSEUR
 
-        self.role = ATTAQUANT
-        self.ennemi.role = DEFENSEUR
+    def attaquer(self):
 
+        self.choisir_nbr_des()
         self.lancer_des()
+
+        self.ennemi.choisir_nbr_des()
         self.ennemi.lancer_des()
 
         self.compter_morts()
@@ -100,69 +110,138 @@ class Armee:
         self.manage_statut()
         self.ennemi.manage_statut()
 
-    def usque_ad_mortem(self):
-        pass
+    def usque_ad_mortem(self, ennemi=None, afficher=False):
+        self.initialise_attaque(ennemi)
+        i = 0
+        while not (self._statut and self.ennemi._statut):
+            self.attaquer()
+            if afficher:
+                if i % (int(self.nbr_initial / 20)) == 0 or GAGNANT in (self.statut, self.ennemi.statut):
+                    system("clear")
+                    self.afficher_avancement()
+                    self.ennemi.afficher_avancement()
+            i += 1
+        if self._statut is GAGNANT:
+            return self
+        return self.ennemi
+
+    def afficher_avancement(self):
+        pct = int((self.nbr * 100) / self.nbr_initial)
+        print(('|' * pct).ljust(100), pct, '%')
 
 
 if __name__ == '__main__':
 
-    a = Armee(24)
-    a.role = ATTAQUANT
-
-    b = Armee(13, ennemi=a, role=DEFENSEUR)
-    assert b.ennemi is a
-
-    a.ennemi = b
-
-    # Test de choisir_nbr_des
-    pass
-
-    # Test de lancer_des
-    for _ in range(100):
+    def test_choisir_nbr_des():
+        a = Armee(12)
+        b = Armee(8)
+        a.ennemi = b
+        b.ennemi = a
+        a._role = ATTAQUANT
+        b._role = DEFENSEUR
+        b.delta = 9
         a.choisir_nbr_des()
-        les_des = a.lancer_des()
-        assert len(les_des) == 3
-        assert max(les_des) < 7
-        assert min(les_des) > 0
-        assert les_des[0] >= les_des[-1]
+        a._des = (6, 5, 2)
         b.choisir_nbr_des()
-        les_des = b.lancer_des()
-        assert len(les_des) in (1, 2)
-        assert max(les_des) < 7
-        assert min(les_des) > 0
+        assert a._nbr_des == 3
+        assert b._nbr_des == 1
+    test_choisir_nbr_des()
 
-    # Test de compter_morts
-    a.des = (5, 2, 2)
-    b.des = (5, 1)
-    a.compter_morts()
-    b.compter_morts()
-    assert a.nbr_morts == 1
-    assert b.nbr_morts == 1
 
-    # Test de enregistrer morts
-    a.role = ATTAQUANT
-    b.role = DEFENSEUR
-    a.nbr = 7
-    b.nbr = 5
-    a.nbr_morts = 2
-    b.nbr_morts = 0
-    a.enregistrer_morts()
-    b.enregistrer_morts()
-    assert a.nbr == 5
-    assert b.nbr == 5
+    def test_lancer_des():
+        # Test de lancer_des
+        for _ in range(100):
+            a = Armee(12)
+            b = Armee(8)
+            a.ennemi = b
+            b.ennemi = a
+            a._role = ATTAQUANT
+            b._role = DEFENSEUR
+            a.choisir_nbr_des()
+            a.lancer_des()
+            b.choisir_nbr_des()
+            b.lancer_des()
+            assert max(a._des + b._des) < 7
+            assert min(a._des + b._des) > 0
+    test_lancer_des()
 
-    # Test de manage_statut
-    a.role = ATTAQUANT
-    b.role = DEFENSEUR
-    a.nbr = 1
-    b.nbr = 5
-    a.manage_statut()
-    b.manage_statut()
-    assert a.statut is PERDANT
-    assert b.statut is GAGNANT
+    def test_compter_morts():
+        # Test de compter_morts
+        a = Armee(12)
+        b = Armee(8)
+        a.ennemi = b
+        b.ennemi = a
+        a._role = ATTAQUANT
+        b._role = DEFENSEUR
+        a._des = (5, 2, 2)
+        b._des = (5, 1)
+        a.compter_morts()
+        b.compter_morts()
+        assert a._nbr_morts == 1
+        assert b._nbr_morts == 1
+    test_compter_morts()
 
-    a.attaquer(b)
-    assert a.ennemi is b
 
-    pprint(a.__dict__)
-    pprint(b.__dict__)
+    def test_enregistrer_morts():
+        # Test de enregistrer morts
+        a = Armee(12)
+        b = Armee(8)
+        a._role = ATTAQUANT
+        b._role = DEFENSEUR
+        a._nbr_morts = 2
+        b._nbr_morts = 0
+        a.enregistrer_morts()
+        b.enregistrer_morts()
+        assert a.nbr == 10
+        assert b.nbr == 8
+    test_enregistrer_morts()
+
+
+    def test_manage_statut():
+        # Test de manage_statut
+        a = Armee(12)
+        b = Armee(8)
+        a.ennemi = b
+        b.ennemi = a
+        a._role = ATTAQUANT
+        b._role = DEFENSEUR
+        a.nbr = 1
+        b.nbr = 5
+        a.manage_statut()
+        b.manage_statut()
+        assert a.statut is PERDANT
+        assert b.statut is GAGNANT
+    test_manage_statut()
+
+
+    def test_initialise_attaque():
+        a = Armee(12)
+        b = Armee(8)
+        a.initialise_attaque(b)
+        assert a._role is ATTAQUANT
+        assert b._role is DEFENSEUR
+        assert a.ennemi is b
+        assert b.ennemi is a
+
+
+    def test_attaquer():
+        a = Armee(12)
+        b = Armee(8)
+        a.initialise_attaque(b)
+        a.attaquer()
+        assert a.ennemi is b
+    test_attaquer()
+
+
+    def test_usque_ad_mortem():
+        Armee.omnia = []
+        nbr = 1000000
+        a = Armee(nbr)
+        b = Armee(nbr)
+        from time import time
+        debut = time()
+        gagnant = a.usque_ad_mortem(b, True)
+        fin = time()
+        pprint(gagnant.__dict__)
+        print(round(fin - debut, 3), "secondes")
+    test_usque_ad_mortem()
