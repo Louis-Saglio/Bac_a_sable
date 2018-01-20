@@ -50,7 +50,8 @@ class Armee:
             elif (sum(self.ennemi._des) >= self.delta) or self.nbr == 1:
                 self._nbr_des = 1
             else:
-                raise ArmyError(f"{self.__dict__}{self.ennemi.des}")
+                return 1
+                # raise ArmyError(f"{self.__dict__}{self.ennemi.des}")
         else:
             raise NotImplementedError(f"Rôle non géré : {self._role}")
 
