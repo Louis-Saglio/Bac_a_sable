@@ -1,7 +1,8 @@
-import PyPDF2
 import io
-import reportlab.pdfgen.canvas
+
+import PyPDF2
 import reportlab.lib.pagesizes
+import reportlab.pdfgen.canvas
 
 
 class PdfException(Exception):
@@ -28,7 +29,7 @@ class PdfTemplate:
             for line_num in range(line_nbr):
                 line_size = emplacement_data[line_num][2]
                 if value is not None:
-                    chunk = value[line_size*line_num:(line_size*line_num+line_size)]
+                    chunk = value[line_size * line_num : (line_size * line_num + line_size)]
                     if chunk:
                         canvas.drawString(*emplacement_data[line_num][:2], chunk)
         canvas.save()
@@ -53,9 +54,5 @@ class PdfTemplate:
             output.addPage(reader.getPage(1))
             output.addPage(reader.getPage(2))
 
-            print(output.getNumPages())
-
             with open(self.output_file_path, "wb") as final:
                 output.write(final)
-
-        print("done")

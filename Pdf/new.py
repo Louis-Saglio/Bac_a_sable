@@ -3,7 +3,7 @@ import Pdf.api as api
 
 template = api.PdfTemplate(
     "contrat.pdf",
-    "final.pdf",
+    "out.pdf",
     {
         "tenant_full_name": ((175, 715, 27),),
         "owner_full_name": ((375, 715, 27),),
