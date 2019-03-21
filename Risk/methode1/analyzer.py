@@ -35,7 +35,7 @@ def determiner_si_bonne_precision(nbr_deff, precision):
 def tout_tester():
     nbr_attak = 2
     for nbr_def in range(1, 100):
-        nbr_attak = determiner_nbr_attak_gagne_vs_nbr_deff(nbr_def, commencer_avec=nbr_attak-1)
+        nbr_attak = determiner_nbr_attak_gagne_vs_nbr_deff(nbr_def, commencer_avec=nbr_attak - 1)
         print(nbr_attak, "attaquants gagnent vs", nbr_def, "deffenseurs")
 
 

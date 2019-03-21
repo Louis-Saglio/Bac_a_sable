@@ -4,7 +4,6 @@ import random
 
 
 class Afficheur(threading.Thread):
-
     def __init__(self, lettre):
         super().__init__()
         self.lettre = lettre
@@ -16,7 +15,6 @@ class Afficheur(threading.Thread):
 
 
 class Chatter(threading.Thread):
-
     def __init__(self, client=None):
         super().__init__()
         self.client = client
@@ -31,7 +29,7 @@ class Chatter(threading.Thread):
             self.client.message = message
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     a = Chatter()
     b = Chatter(a)
     a.client = b

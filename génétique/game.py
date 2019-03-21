@@ -4,7 +4,7 @@ from time import time
 
 
 def rand(chars: str):
-    chars = chars.replace('.', "0")
+    chars = chars.replace(".", "0")
     rep = 0
     for l in chars:
         rep += int(l)
@@ -87,5 +87,6 @@ def run():
 
     print(f"Joueur 1 :\t {vct1} victoire soit\t{(100 * vct1) / nbr_tours}%")
     print(f"Joueur 2 :\t {vct2} victoire soit\t{(100 * vct2) / nbr_tours}%")
+
 
 run()

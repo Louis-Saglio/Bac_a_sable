@@ -1,7 +1,7 @@
 import socket
 
 client = socket.socket()
-client.connect(('127.0.0.1', 8888))
+client.connect(("127.0.0.1", 8889))
 
 
 while True:

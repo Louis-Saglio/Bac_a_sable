@@ -1,5 +1,4 @@
 class Case:
-
     def __init__(self, value, owning_map, coordinates):
         self.value = value
         self.owning_map = owning_map
@@ -15,7 +14,7 @@ class Case:
             "is_top": h == 0 or False,
             "is_left": l == 0 or False,
             "is_bottom": h == self.owning_map.height - 1 or False,
-            "is_right": l == self.owning_map.width - 1 or False
+            "is_right": l == self.owning_map.width - 1 or False,
         }
 
     def is_border_position(self):
@@ -23,8 +22,7 @@ class Case:
 
 
 class Map:
-
-    def __init__(self, width, height, filling='M', border='B'):
+    def __init__(self, width, height, filling="M", border="B"):
         self.width = width
         self.height = height
         self.border_type = border
@@ -47,9 +45,9 @@ class Map:
         self.map[index1][index2] = Case(value, self, key)
 
     def __str__(self):
-        rep = ''
+        rep = ""
         for case in self:
-            rep += str(case.value) + ' ' + ('\n' if case.border["is_right"] else '')
+            rep += str(case.value) + " " + ("\n" if case.border["is_right"] else "")
         return rep
 
     def create_map(self):
@@ -62,7 +60,6 @@ class Map:
 
 
 class Pawn:
-
     def __init__(self, owning_map, position, look):
         """
         :type owning_map Map
@@ -94,11 +91,12 @@ class Pawn:
     def move(self, direction):
         directions = {"up": (0, -1), "down": (0, 1), "right": (1, 0), "left": (-1, 0)}
         self.owning_map[self.position] = self.case
-        self.position = (self.position[0]+directions[direction][0], self.position[1]+directions[direction][1])
+        self.position = (self.position[0] + directions[direction][0], self.position[1] + directions[direction][1])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from time import time
+
     x, y, a, b = 10, 6, 2, 3
     debut = time()
     test = Map(x, y)
@@ -112,4 +110,4 @@ if __name__ == '__main__':
     pawn.move("right")
     pawn.move("up")
     print(test)
-    print("Tests executés en", round(time()-debut, 3), "seconde(s) avec succès.")
+    print("Tests executés en", round(time() - debut, 3), "seconde(s) avec succès.")

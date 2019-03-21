@@ -23,7 +23,7 @@ def pause(temps):
 
 
 def give_name():
-    rep = ''
+    rep = ""
     nbr = randint(4, 8)
     consonnes = "zrtypqsdfghjklmwxcvbn"
     voyelles = "aeyuio"
@@ -59,7 +59,6 @@ class Espece:
 
 
 class Individu:
-
     def __init__(self, espece, taille, intelligence, agilite, fecondite):
         # self.nom = str([choice(list("azertyuiopqsdfghjklmwxcvbn")) for i in range(randint(5, 8))]).title()
         self.nom = give_name()
@@ -86,24 +85,24 @@ class Individu:
             return None
 
     def attaquer(self, other):
-        s = (self.taille + self.agilite + self.intelligence)
-        o = (other.taille + other.agilite + other.intelligence)
+        s = self.taille + self.agilite + self.intelligence
+        o = other.taille + other.agilite + other.intelligence
         if s > o:
             other.mourrir()
         elif o > s:
             self.mourrir()
 
     def __str__(self):
-        rep = ''
+        rep = ""
         for attribut, valeur in self.__dict__.items():
-            attr = f"{attribut}".ljust(15, ' ')
+            attr = f"{attribut}".ljust(15, " ")
             if attribut == "espece":
-                val = f"{valeur.nom}".ljust(15, ' ')
+                val = f"{valeur.nom}".ljust(15, " ")
             elif attribut != "population":
-                val = f"{valeur}".ljust(15, ' ')
+                val = f"{valeur}".ljust(15, " ")
             if attribut != "population":
                 rep += f"{attr}\t:\t{val}\n"
-        return rep + '\n'
+        return rep + "\n"
 
     def mourrir(self):
         if self.population is not None:
@@ -112,7 +111,6 @@ class Individu:
 
 
 class Population(list):
-
     def reproduire(self):
         rep = deepcopy(self)
         for n in rep:
@@ -144,15 +142,17 @@ class Population(list):
         for e in self:
             if e.espece not in liste_spc:
                 liste_spc.append(e.espece)
-        rep = ''
+        rep = ""
         for e in liste_spc:
             rep += f"{e.nom.title()} : {len([i for i in self if i.espece == e])}\n"
-        return f"{indivs}\nNombre total : {nbr}\n{rep}Taille : {taille}\nIntelligence : {intelligence}\n" \
-               f"Agilité : {agilite}\nFécondité : {fecondite}"
+        return (
+            f"{indivs}\nNombre total : {nbr}\n{rep}Taille : {taille}\nIntelligence : {intelligence}\n"
+            f"Agilité : {agilite}\nFécondité : {fecondite}"
+        )
 
     def __str__(self):
         self.bilan()
-        rep = self.bilan() + '\n\n'
+        rep = self.bilan() + "\n\n"
         for indiv in self:
             rep += indiv.__str__()
         return rep
@@ -197,6 +197,6 @@ def observer():
     pause(10)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # tester()
     observer()

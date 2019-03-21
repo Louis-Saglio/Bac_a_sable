@@ -3,5 +3,6 @@ def gen():
     for lettre in a:
         yield lettre
 
+
 for i in gen():
     print(i, end=" ")

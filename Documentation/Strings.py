@@ -11,7 +11,6 @@ test.capitalize()  # -> Lettre
 "Maison".capitalize()  # -> Maison
 "18h".capitalize()  # -> 18h
 
-print(test.center(15, '.'))
+print(test.center(15, "."))
 
 print(test.casefold())
-

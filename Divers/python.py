@@ -1,6 +1,7 @@
 def premier(vmax):
     from time import time
     from math import sqrt
+
     # compteur = 0
     debut = time()
     premiers = []
@@ -11,7 +12,7 @@ def premier(vmax):
             if nombre % test == 0:
                 est_premier = False
                 break
-            elif test**2 > sqrt(nombre):
+            elif test ** 2 > sqrt(nombre):
                 est_premier = True
                 break
             else:
@@ -31,17 +32,18 @@ def pourcentage_premiers(val):
     z = val
     a = premier(z)
     b = len(a)
-    c = round((b/z)*100, 10)
+    c = round((b / z) * 100, 10)
     return c
 
 
 def temps():
     from time import time
+
     debut = time()
     for i in range(0, 100000, 1000):
         print(i, pourcentage_premiers(i))
     fin = time()
-    print("Durée totale :", fin-debut)
+    print("Durée totale :", fin - debut)
 
 
 def sum_str(string):
@@ -55,8 +57,11 @@ def sum_str(string):
 
 
 def aleatoire():
-    nbr = sum_str((str(pourcentage_premiers(sum([int(i) for i in list(premier(1000)["duree"].split('.')[1])]))).split('.'))[1])
+    nbr = sum_str(
+        (str(pourcentage_premiers(sum([int(i) for i in list(premier(1000)["duree"].split(".")[1])]))).split("."))[1]
+    )
     return nbr
+
 
 # a = [aleatoire() for i in range(1000)]
 # for i in a:

@@ -1,7 +1,7 @@
 class Joueur:
-
     def __init__(self):
         from random import randint as randint
+
         self.rand = randint
         self.capital_depart = 1000
         self.historique_random = []
@@ -52,6 +52,7 @@ class Joueur:
     def main(self):
         self.jouer_beaucoup(50000)
         self.calculer_gain_moyen()
+
 
 j = Joueur()
 j.main()

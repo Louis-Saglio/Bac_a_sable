@@ -1,5 +1,6 @@
 def lancer_des(nbr_des):
     from random import randint
+
     a = []
     for i in range(nbr_des):
         a.append(randint(1, 6))
@@ -43,9 +44,9 @@ def combattre(nbr_attak, nbr_deff):
     compt = 0
     while nbr_attak != 1 and nbr_deff != 0:
         compt += 1
-        nbr_des_attak = determiner_nbr_des(nbr_attak, 'attak')
+        nbr_des_attak = determiner_nbr_des(nbr_attak, "attak")
         des_attak = lancer_des(nbr_des_attak)
-        nbr_des_deff = determiner_nbr_des(nbr_deff, 'deff', des_attak)
+        nbr_des_deff = determiner_nbr_des(nbr_deff, "deff", des_attak)
         des_deff = lancer_des(nbr_des_deff)
         morts = evaluer_pertes(des_attak, des_deff)
         nbr_attak -= morts[0]
@@ -56,7 +57,13 @@ def combattre(nbr_attak, nbr_deff):
     else:
         gagnant = "deff"
         perdant = "attack"
-    return {"nbr_tours": compt, "reste_attak": nbr_attak, "reste_deff": nbr_deff, "gagnant": gagnant, "perdant": perdant}
+    return {
+        "nbr_tours": compt,
+        "reste_attak": nbr_attak,
+        "reste_deff": nbr_deff,
+        "gagnant": gagnant,
+        "perdant": perdant,
+    }
 
 
 if __name__ == "__main__":

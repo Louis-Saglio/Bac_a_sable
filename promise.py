@@ -37,22 +37,24 @@ class Promise:
         return self
 
     def __repr__(self):
-        return 'Promise <pending>'
+        return "Promise <pending>"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     def run(param) -> Promise:
-        print('run', param)
+        print("run", param)
         return Promise()
 
-    p = run('lol')\
-        .then(lambda: 44)\
-        .then(lambda x: 55)\
-        .then(lambda x: print(1 / 0, x)) \
-        .catch(lambda x: print("caught", x)) \
-        .then(lambda: 'marche')
+    p = (
+        run("lol")
+        .then(lambda: 44)
+        .then(lambda x: 55)
+        .then(lambda x: print(1 / 0, x))
+        .catch(lambda x: print("caught", x))
+        .then(lambda: "marche")
+    )
     p.then(lambda x: print(x))
 
     # time.sleep(3)
     print(p)
-

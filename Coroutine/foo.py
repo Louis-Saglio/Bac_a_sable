@@ -4,17 +4,17 @@ def gene():
         try:
             v = yield i
         except ValueError as err:
-            print('ValueError caught', err)
-        print('received value :', v)
-    return 'Raise StopIteration via return. Accessible vie error.value'
+            print("ValueError caught", err)
+        print("received value :", v)
+    return "Raise StopIteration via return. Accessible vie error.value"
 
 
 a = gene()
 
 next(a)
-a.send('from caller')
+a.send("from caller")
 
-a.throw(ValueError, '@@$raised')
+a.throw(ValueError, "@@$raised")
 
 a.close()
 try:

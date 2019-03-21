@@ -128,10 +128,10 @@ class Armee:
 
     def afficher_avancement(self):
         pct = int((self.nbr * 100) / self.nbr_initial)
-        print(('|' * pct).ljust(100), pct, '%')
+        print(("|" * pct).ljust(100), pct, "%")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     def test_choisir_nbr_des():
         a = Armee(12)
@@ -146,8 +146,8 @@ if __name__ == '__main__':
         b.choisir_nbr_des()
         assert a._nbr_des == 3
         assert b._nbr_des == 1
-    test_choisir_nbr_des()
 
+    test_choisir_nbr_des()
 
     def test_lancer_des():
         # Test de lancer_des
@@ -164,6 +164,7 @@ if __name__ == '__main__':
             b.lancer_des()
             assert max(a._des + b._des) < 7
             assert min(a._des + b._des) > 0
+
     test_lancer_des()
 
     def test_compter_morts():
@@ -180,8 +181,8 @@ if __name__ == '__main__':
         b.compter_morts()
         assert a._nbr_morts == 1
         assert b._nbr_morts == 1
-    test_compter_morts()
 
+    test_compter_morts()
 
     def test_enregistrer_morts():
         # Test de enregistrer morts
@@ -195,8 +196,8 @@ if __name__ == '__main__':
         b.enregistrer_morts()
         assert a.nbr == 10
         assert b.nbr == 8
-    test_enregistrer_morts()
 
+    test_enregistrer_morts()
 
     def test_manage_statut():
         # Test de manage_statut
@@ -212,8 +213,8 @@ if __name__ == '__main__':
         b.manage_statut()
         assert a.statut is PERDANT
         assert b.statut is GAGNANT
-    test_manage_statut()
 
+    test_manage_statut()
 
     def test_initialise_attaque():
         a = Armee(12)
@@ -224,25 +225,26 @@ if __name__ == '__main__':
         assert a.ennemi is b
         assert b.ennemi is a
 
-
     def test_attaquer():
         a = Armee(12)
         b = Armee(8)
         a.initialise_attaque(b)
         a.attaquer()
         assert a.ennemi is b
-    test_attaquer()
 
+    test_attaquer()
 
     def test_usque_ad_mortem():
         Armee.omnia = []
-        nbr = 1000000
+        nbr = 1_000_000
         a = Armee(nbr)
         b = Armee(nbr)
         from time import time
+
         debut = time()
         gagnant = a.usque_ad_mortem(b, True)
         fin = time()
         pprint(gagnant.__dict__)
         print(round(fin - debut, 3), "secondes")
+
     test_usque_ad_mortem()

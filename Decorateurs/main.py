@@ -1,5 +1,6 @@
 def premier(vmax):
     from math import sqrt
+
     # compteur = 0
     premiers = []
     est_premier = True
@@ -9,7 +10,7 @@ def premier(vmax):
             if nombre % test == 0:
                 est_premier = False
                 break
-            elif test**2 > sqrt(nombre):
+            elif test ** 2 > sqrt(nombre):
                 est_premier = True
                 break
             else:

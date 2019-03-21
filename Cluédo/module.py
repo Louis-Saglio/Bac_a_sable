@@ -14,10 +14,21 @@ def is_in_list_2d(liste2d, item):
 
 class Joueur:
     liste_des_joueurs = []
-    liste_des_cartes = {"suspects": ["rose", "moutarde", "pervanche", "leblanc", "olive", "violet"],
-                        "pieces": ["salon", "salle-à-manger", "bibliothèque", "véranda", "cuisine", "hall", "petit-salon", "studio", "bureau"],
-                        "armes": ["poignard", "revolver", "matraque", "clef", "chandelier", "corde"]
-                        }
+    liste_des_cartes = {
+        "suspects": ["rose", "moutarde", "pervanche", "leblanc", "olive", "violet"],
+        "pieces": [
+            "salon",
+            "salle-à-manger",
+            "bibliothèque",
+            "véranda",
+            "cuisine",
+            "hall",
+            "petit-salon",
+            "studio",
+            "bureau",
+        ],
+        "armes": ["poignard", "revolver", "matraque", "clef", "chandelier", "corde"],
+    }
 
     @classmethod
     def init(cls):
@@ -35,34 +46,40 @@ class Joueur:
 
     def choisir(self, quoi):
         while 1:
-            a = choice(Joueur.liste_des_cartes[quoi+'s'])
+            a = choice(Joueur.liste_des_cartes[quoi + "s"])
             if not is_in_list_2d(self.cartes_possedees_par, a):
                 return a
 
     def accuser(self):
-        accusation = {"accusateur": self.nom,
-                      "piece": self.choisir("piece"),
-                      "arme": self.choisir("arme"),
-                      "suspect": self.choisir("suspect")
-                      }
+        accusation = {
+            "accusateur": self.nom,
+            "piece": self.choisir("piece"),
+            "arme": self.choisir("arme"),
+            "suspect": self.choisir("suspect"),
+        }
         reponse = None
 
     def repondre(self, accusation):
         try:
-            return choice([accusation[key] for key in accusation if key != "accusateur" and not is_in_list_2d(self.cartes_possedees_par, accusation[key])])
+            return choice(
+                [
+                    accusation[key]
+                    for key in accusation
+                    if key != "accusateur" and not is_in_list_2d(self.cartes_possedees_par, accusation[key])
+                ]
+            )
         except ValueError:
             return None
 
 
 class ListeDeJoueur(list):
-
     def find_joueur(self, nom):
         for joueur in self:
             if nom == joueur.nom:
                 return joueur
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Joueur.liste_des_cartes["pieces"].append("salon")
     Joueur.liste_des_cartes["pieces"].append("cuisine")
     Joueur.liste_des_cartes["pieces"].append("hall")

@@ -8,11 +8,13 @@ def chronometre(func):
         res = func(*param)
         print("Temps d'execution de la fonction", str(func).split()[1], ":", round(time() - debut, 3), "secondes")
         return res
+
     return decorated
 
 
 @chronometre
 def premier(vmax):
     return sdf(vmax)
+
 
 print(premier(9875))

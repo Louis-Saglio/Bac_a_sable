@@ -7,5 +7,3 @@ print(b)
 
 def d(c):
     return (c * c - c) / (c + c)
-
-

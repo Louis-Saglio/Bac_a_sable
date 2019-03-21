@@ -7,10 +7,21 @@ from fonctions import intermingle
 
 class Carte:
 
-    cartes_possibles = {"suspect": ["rose", "moutarde", "pervanche", "leblanc", "olive", "violet"],
-                        "piece": ["salon", "salle-à-manger", "bibliothèque", "véranda", "cuisine", "hall", "petit-salon", "studio", "bureau"],
-                        "arme": ["poignard", "revolver", "matraque", "clef", "chandelier", "corde"]
-                        }
+    cartes_possibles = {
+        "suspect": ["rose", "moutarde", "pervanche", "leblanc", "olive", "violet"],
+        "piece": [
+            "salon",
+            "salle-à-manger",
+            "bibliothèque",
+            "véranda",
+            "cuisine",
+            "hall",
+            "petit-salon",
+            "studio",
+            "bureau",
+        ],
+        "arme": ["poignard", "revolver", "matraque", "clef", "chandelier", "corde"],
+    }
 
     def __init__(self, nom):
         self.nom = nom
@@ -36,7 +47,12 @@ class Joueur:
         self.cartes_connu = []
 
     def __str__(self):
-        return '\n'.join(['\t'.join([str(val) for val in [clef.ljust(max([len(key) for key in self.__dict__])), valeur]]) for clef, valeur in self.__dict__.items()])
+        return "\n".join(
+            [
+                "\t".join([str(val) for val in [clef.ljust(max([len(key) for key in self.__dict__])), valeur]])
+                for clef, valeur in self.__dict__.items()
+            ]
+        )
 
     def choisir(self, quoi):
         for carte in intermingle([Carte.cartes_possibles[quoi]]):
@@ -47,7 +63,6 @@ class Joueur:
 
 @chronometre
 def tests():
-
     @monsieur
     def carte(nbr_tests):
         test = Carte(choice(Carte.cartes_possibles[choice([key for key in Carte.cartes_possibles])]))
@@ -71,7 +86,8 @@ def tests():
     carte(10)
     joueur(10)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     tests()
     a = Joueur("rose")
     print(a)

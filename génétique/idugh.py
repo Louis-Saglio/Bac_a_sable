@@ -12,7 +12,7 @@ def pause():
 
 
 def rand1(chars: str):
-    chars = chars.replace('.', "0")
+    chars = chars.replace(".", "0")
     rep = 0
     for l in chars:
         rep += int(l)
@@ -64,14 +64,16 @@ def run_stat(mode="stat", nbr=1000):
     if mode != "timeit":
         deb = time.time()
         if "stat" in mode:
-            verbose = True if '-v' in mode else False
+            verbose = True if "-v" in mode else False
             stat(nbr, verbose)
         if mode == "classique":
             for i in range(nbr):
                 a = aleatoire()
         temps = round(time.time() - deb, 2)
-        print(f"\nTemps d'exécution : {temps} secondes. Soit une moyenne de {round((temps * 1000) / nbr, 2)} millième "
-              f"de seconde par test")
+        print(
+            f"\nTemps d'exécution : {temps} secondes. Soit une moyenne de {round((temps * 1000) / nbr, 2)} millième "
+            f"de seconde par test"
+        )
     else:
         name_space = locals()
         name_space.update({"aleatoire": aleatoire})
@@ -79,5 +81,5 @@ def run_stat(mode="stat", nbr=1000):
         print(f"{temps * 1000} millième de seconde par test")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_stat("stat -v", 10)

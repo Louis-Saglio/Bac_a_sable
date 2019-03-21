@@ -7,7 +7,6 @@ from Risk.methode3.main import Armee
 
 
 class Process(mp.Process):
-
     def __init__(self, group=None, target=None, name=None, args=(), kwargs={}):
         super().__init__(group, target, name, args, kwargs)
         self.queue = kwargs["queue"]

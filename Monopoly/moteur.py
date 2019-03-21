@@ -15,6 +15,7 @@ def compter(liste, limite=20):
         rep.append(item)
     return rep
 
+
 for joueur in compter(joueurs):
     joueur.avancer()
 

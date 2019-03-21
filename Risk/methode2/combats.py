@@ -7,6 +7,7 @@ def lancer_des(nbr_des):
     if nbr_des < 1 or not isinstance(nbr_des, int):
         raise ValueError("Le parametre nbr_des doit être supèrieur à 0. Pas {0}".format(nbr_des))
     from random import randint
+
     resultats_des = [randint(1, 6) for i in range(nbr_des)]
     resultats_des.sort(reverse=True)
     return resultats_des
@@ -65,6 +66,7 @@ def comparer_des(des_attaquant, des_defenseur):
 
 def combatre(nbr_attaquants, nbr_defenseurs):
     from time import time
+
     debut = time()
     stat_unites = {"attaquant": [], "defenseur": []}
     while nbr_attaquants != 1 and nbr_defenseurs != 0:
@@ -76,9 +78,9 @@ def combatre(nbr_attaquants, nbr_defenseurs):
         nbr_attaquants -= morts["morts_attaquant"]
         nbr_defenseurs -= morts["morts_defenseur"]
     if nbr_defenseurs == 0:
-        gagnant = 'attaquant'
+        gagnant = "attaquant"
     else:
-        gagnant = 'defenseur'
+        gagnant = "defenseur"
     stat_unites["attaquant"].append(nbr_attaquants)
     stat_unites["defenseur"].append(nbr_defenseurs)
     fin = time()
@@ -99,8 +101,8 @@ def lancer_x_combats(nbr_combats, nbr_attaquants, nbr_defenseurs):
 
 def probabilite_gagner(nbr_attaquants, nbr_defenseurs, nbr_combats=10000):
     data = lancer_x_combats(nbr_combats, nbr_attaquants, nbr_defenseurs)
-    nbr_victoires_attaquant = len([combat['gagnant'] for combat in data if combat['gagnant'] == 'attaquant'])
-    nbr_victoires_defenseur = len([combat['gagnant'] for combat in data if combat['gagnant'] == 'defenseur'])
+    nbr_victoires_attaquant = len([combat["gagnant"] for combat in data if combat["gagnant"] == "attaquant"])
+    nbr_victoires_defenseur = len([combat["gagnant"] for combat in data if combat["gagnant"] == "defenseur"])
     probabilite_attaquant = round((nbr_victoires_attaquant / nbr_combats) * 100, 1)
     probabilite_defenseur = round((nbr_victoires_defenseur / nbr_combats) * 100, 1)
     return {"probabilite_attaquant": probabilite_attaquant, "probabilite_defenseur": probabilite_defenseur}
@@ -109,15 +111,15 @@ def probabilite_gagner(nbr_attaquants, nbr_defenseurs, nbr_combats=10000):
 def trouver_combien_gagnent_contre(nbr_defenseurs, nbr_attaquants=2, probabilite_minimale=51):
     victoire = False
     while victoire is False:
-        victoire = (probabilite_gagner(nbr_attaquants, nbr_defenseurs)["probabilite_attaquant"] > probabilite_minimale)
+        victoire = probabilite_gagner(nbr_attaquants, nbr_defenseurs)["probabilite_attaquant"] > probabilite_minimale
         if victoire is False:
             nbr_attaquants += 1
     return nbr_attaquants
 
 
-def main(mini=1, maxi=100, sortie='log', mode='a'):
-    if sortie == 'log':
-        sortie = open('log', mode)
+def main(mini=1, maxi=100, sortie="log", mode="a"):
+    if sortie == "log":
+        sortie = open("log", mode)
     else:
         sortie = None
     nbr_attaquants = 2
@@ -128,8 +130,10 @@ def main(mini=1, maxi=100, sortie='log', mode='a'):
 
 if __name__ == "__main__":
     from time import time
+
     debut = time()
     from random import randint
+
     # Test de lancer_des()
     for i in range(-5, 10):
         try:
@@ -147,5 +151,5 @@ if __name__ == "__main__":
             assert i < 2
     morts = comparer_des([randint(1, 6) for i in range(3)], [randint(1, 6) for i in range(2)])
     assert morts["morts_attaquant"] + morts["morts_defenseur"] == 2
-    main(1, 100, 'log')
+    main(1, 100, "log")
     print("Les tests ont duré {0} secondes et se sont déroulés avec succès.".format(round(time() - debut, 3)))

@@ -8,6 +8,7 @@ def parallel(func):
     def wrapper(*args, **kwargs):
         process = mp.Process(target=func, args=args, kwargs=kwargs)
         process.start()
+
     return wrapper
 
 
@@ -15,6 +16,7 @@ def thread(func):
     def wrapper(*args, **kwargs):
         thread_ = th.Thread(target=func, args=args, kwargs=kwargs)
         thread_.start()
+
     return wrapper
 
 
@@ -25,5 +27,5 @@ def run(name):
         print(name, i)
 
 
-run('a')
-run('b')
+run("a")
+run("b")

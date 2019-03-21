@@ -6,4 +6,3 @@ with open("file.json", "r") as f:
 
 with open("a.json", "w") as a:
     json.dump(data, a, indent=4)
-

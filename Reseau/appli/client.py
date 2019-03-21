@@ -2,7 +2,7 @@ from listener import *
 
 
 client = socket.socket()
-client.connect(('', 8888))
+client.connect(("", 8888))
 
 listener = Listener(client)
 speaker = Speaker(client)

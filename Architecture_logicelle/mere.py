@@ -9,11 +9,10 @@ def get(obj, index):
 
 
 class Mere:
-
     def __init__(self):  # todo: ajouter **kwargs
         self.filles = []
         self.garcons = []
-        self.class_name = str(self.__class__).split('.')[-1][:-2]
+        self.class_name = str(self.__class__).split(".")[-1][:-2]
 
     def add_child(self, child, field=None, child_mother_name=None):
         if child_mother_name is None:
@@ -27,7 +26,7 @@ class Mere:
     def __find_list_field_name_for_new_child_by_class_name(self, child):
         if hasattr(child, "class_name"):
             return child.class_name
-        return str(child.__class__).split('.')[-1][:-2].lower() + 's'
+        return str(child.__class__).split(".")[-1][:-2].lower() + "s"
 
     def _find_list_field_name_for_new_child(self, child):
         list_field_names = [""] * 3
@@ -39,8 +38,10 @@ class Mere:
         for list_field_name in list_field_names:
             if hasattr(self, list_field_name):
                 return list_field_name
-        raise ValueError(f"Impossible de déterminer automatiquement l'attribut ou ranger {child}"
-                         f"Nom(s) testé(s) : {[name for name in list_field_names if name]}")
+        raise ValueError(
+            f"Impossible de déterminer automatiquement l'attribut ou ranger {child}"
+            f"Nom(s) testé(s) : {[name for name in list_field_names if name]}"
+        )
 
     def find_item_from_child_list_field_by_field(self, list_field_name, child_field_name, matching_value):
         for item in self.__dict__[list_field_name]:
@@ -49,9 +50,8 @@ class Mere:
 
 
 class Child:
-
     def __init__(self, mother=None):  # todo: dans le __init__ par defaut ou non initialisé ?
-        self.class_name = str(self.__class__).split('.')[-1][:-2]
+        self.class_name = str(self.__class__).split(".")[-1][:-2]
         if mother is not None:
             mother.add_child(self)
 

@@ -5,7 +5,6 @@ from tkinter import *
 
 # noinspection PyShadowingNames
 class Case:
-
     def __init__(self, value, owning_map, coordinates):
         self.value = value
         self.owning_map = owning_map
@@ -16,7 +15,12 @@ class Case:
         return str(self.value)
 
     def debug(self):
-        return '\n'.join(['\t'.join([str(val) for val in [clef.ljust(max([len(key) for key in self.__dict__])), valeur]]) for clef, valeur in self.__dict__.items()])
+        return "\n".join(
+            [
+                "\t".join([str(val) for val in [clef.ljust(max([len(key) for key in self.__dict__])), valeur]])
+                for clef, valeur in self.__dict__.items()
+            ]
+        )
 
     def get_border_type(self):
         l, h = self.coordinates
@@ -24,7 +28,7 @@ class Case:
             "is_top": h == 0 or False,
             "is_left": l == 0 or False,
             "is_bottom": h == self.owning_map.height - 1 or False,
-            "is_right": l == self.owning_map.width - 1 or False
+            "is_right": l == self.owning_map.width - 1 or False,
         }
 
     def is_border_position(self):
@@ -36,8 +40,7 @@ class Case:
 
 
 class Map:
-
-    def __init__(self, width, height, filling='M', border='B'):
+    def __init__(self, width, height, filling="M", border="B"):
         self.nodes = []
         self.width = width
         self.height = height
@@ -61,9 +64,9 @@ class Map:
         self.map[index1][index2] = Case(value, self, key)
 
     def __str__(self):
-        rep = ''
+        rep = ""
         for case in self:
-            rep += str(case.value) + ' ' + ('\n' if case.border["is_right"] else '')
+            rep += str(case.value) + " " + ("\n" if case.border["is_right"] else "")
         return rep
 
     def create_map(self):
@@ -75,7 +78,7 @@ class Map:
                 self[case.coordinates] = Case(self.border_type, self, case.coordinates)
 
     def get_random_case(self):
-        return self[randint(0, self.width-1), randint(0, self.height-1)]
+        return self[randint(0, self.width - 1), randint(0, self.height - 1)]
 
     def create_random_nodes(self, nbr, node_value="N"):
         for n in range(nbr):
@@ -83,7 +86,6 @@ class Map:
 
 
 class Pawn:
-
     def __init__(self, owning_map, position, look):
         """
         :type owning_map Map
@@ -116,12 +118,11 @@ class Pawn:
     def move(self, direction):
         directions = {"up": (0, -1), "down": (0, 1), "right": (1, 0), "left": (-1, 0)}
         self.owning_map[self.position] = self.case
-        self.position = self.position[0]+directions[direction][0], self.position[1]+directions[direction][1]
+        self.position = self.position[0] + directions[direction][0], self.position[1] + directions[direction][1]
 
 
 class Node:
-
-    def __init__(self, case: Case, value='N'):
+    def __init__(self, case: Case, value="N"):
         self.case = case
         self.value = value
         self.linkeds = []
@@ -133,6 +134,7 @@ class Node:
     def get_nearest_nodes(self, nbr: int):
         def key(val: Node):
             return val.case.get_distance_with(self.case)
+
         rep = []
         for node in self.case.owning_map.nodes:
             if node != self:
@@ -153,8 +155,9 @@ class Node:
         return self.case.get_distance_with(node.case)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from time import time
+
     debut = time()
     test = Map(10, 6)
     test.create_border()
@@ -187,6 +190,6 @@ if __name__ == '__main__':
     #             break
     #     if casse:
     #         break
-    
+
     print(test)
-    print("Tests executés en", round(time()-debut, 3), "seconde(s) avec succès.")
+    print("Tests executés en", round(time() - debut, 3), "seconde(s) avec succès.")

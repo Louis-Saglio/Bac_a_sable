@@ -3,7 +3,7 @@ from listener import *
 
 # Création du serveur
 serveur = socket.socket()
-serveur.bind(('', 8888))
+serveur.bind(("", 8888))
 serveur.listen(5)
 
 # Connexion du client

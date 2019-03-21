@@ -52,7 +52,7 @@ class Individu(object):
         child = Individu()
         # je prends la moitier de moi-même.
         wdth = len(self.route) // 2
-        first_segment = self.route[:wdth // 2]
+        first_segment = self.route[: wdth // 2]
         last_segment = []
         # je complète avec l'autre
         for i in range(len(self.route)):
@@ -76,6 +76,7 @@ class Individu(object):
 
         pen.goto(self.route[0].X, self.route[0].Y)
 
+
 # initialisation des points de la carte.
 # prend en paramètre un nombre de points.
 def init_map(nb):
@@ -84,6 +85,7 @@ def init_map(nb):
     for i in range(nb):
         p = Point(randint(1, 300), randint(1, 300))
         a_map.append(p)
+
 
 # initialisation de la population.
 # prend en paramètre le nombre d'individus à créer.
@@ -94,10 +96,12 @@ def init_pop(nb, map_point):
         i = Individu(True, map_point)
         population.append(i)
 
+
 # fonction qui sert à trier les individus suivant leur score.
 # utile pour trouver les meilleurs.
 def selection(pop):
     pop.sort(key=lambda x: x.score, reverse=True)
+
 
 # dans cette fonction, on sélectionne les 15 meilleurs individus de la population
 # que l'on croise avec les autres individus.
@@ -105,9 +109,10 @@ def selection(pop):
 def croisement(pop):
     new_pop = []
     best_pop = population[85:]
-    for i in range(len(pop)-15) :
+    for i in range(len(pop) - 15):
         new_pop.append(choice(best_pop).croisement(choice(population[20:85])))
     return new_pop + best_pop
+
 
 # la fonction principal.
 # on passe en paramètre le nombre de générations que l'on souhaite faire
@@ -117,17 +122,18 @@ def croisement(pop):
 # Sélection puis croisement de la population
 # à chaque génération on regarde si on a un meilleur score
 # si oui, on l'affiche.
-def play(nb_gene, nb_point) :
+def play(nb_gene, nb_point):
     init_map(nb_point)
     init_pop(100, a_map)
     best_score = 1000000
-    for i in range(nb_gene) :
+    for i in range(nb_gene):
         global population
         population = croisement(population)
         selection(population)
-        if best_score > population[99].score :
+        if best_score > population[99].score:
             best_score = population[99].score
-            print('meilleur score : ' + str(population[99].score))
+            print("meilleur score : " + str(population[99].score))
             population[99].show_me()
+
 
 play(400, 13)

@@ -4,12 +4,9 @@ data = {
     "terrains": {
         "nom": ["paix", "pigalle", "courcelles"],
         "prix": [40, 18, 14],
-        "couleur": ["bleu", "orange", "bleu clair"]
+        "couleur": ["bleu", "orange", "bleu clair"],
     },
-    "joueurs": {
-        "nom": ["moi", "toi"],
-        "capital": [100, 100]
-    }
+    "joueurs": {"nom": ["moi", "toi"], "capital": [100, 100]},
 }
 
 # donnees = {

@@ -1,20 +1,20 @@
 def recup_nombre(chaine):
-    rep = ''
+    rep = ""
     save = False
     for lettre in chaine:
         if lettre.isdigit():
             rep += lettre
             save = True
         elif save:
-            rep += ';'
+            rep += ";"
             save = False
     return rep
 
 
 fichier = "log"
-rep = ''
+rep = ""
 with open(fichier) as file:
     for ligne in file:
-        rep += recup_nombre(ligne) + '\n'
-with open('lelog.csv', 'w') as frfr:
+        rep += recup_nombre(ligne) + "\n"
+with open("lelog.csv", "w") as frfr:
     print(rep, file=frfr)

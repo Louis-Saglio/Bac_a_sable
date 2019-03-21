@@ -5,7 +5,6 @@ import time
 
 
 class Listener(threading.Thread):
-
     def __init__(self, listener_socket: socket.socket):
         super().__init__()
         self.listener_socket = listener_socket
@@ -20,7 +19,6 @@ class Listener(threading.Thread):
 
 
 class Speaker(threading.Thread):
-
     def __init__(self, speaker_socket: socket.socket):
         super().__init__()
         self.speaker_socket = speaker_socket
