@@ -42,8 +42,8 @@ canvas.drawString(175, 491, "222222222")
 canvas.drawString(175, 430, "333333333")
 canvas.drawString(175, 414, "444444444")
 canvas.drawString(175, 399, "555555555")
-canvas.drawString(175, 384, "666666666")
-canvas.drawString(175, 370, "777777777")
+canvas.drawString(175, 378, "666666666")
+# canvas.drawString(175, 370, "777777777")
 
 canvas.drawString(108, 329, "888888888")
 
@@ -66,7 +66,9 @@ output = PyPDF2.PdfFileWriter()
 
 with open("contrat.pdf", "rb") as f:
     reader = PyPDF2.PdfFileReader(f)
+
     page0, page1, page2 = reader.getPage(0), reader.getPage(1), reader.getPage(2)
+
     page0.mergePage(new_pdf.getPage(0))
 
     output.addPage(page0)
