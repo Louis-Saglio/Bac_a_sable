@@ -14,11 +14,11 @@ class PdfTemplate:
         self.base_file_path = base_file_path
         self.output_file_path = output_file_path
         self.emplacements = emplacements
-        self.values = {name: None for name in self.emplacements}
+        self.values = {}
 
     def __setitem__(self, key, value):
         if key in self.emplacements:
-            self.values[key] = value
+            self.values[key] = str(value)
         else:
             raise PdfException("There is no emplacement named {} in this PDF template".format(key))
 
@@ -39,7 +39,9 @@ class PdfTemplate:
 
     def _build_watermark_pdf_filled_with_values_for_page(self, page_num):
         packet = io.BytesIO()
-        canvas = reportlab.pdfgen.canvas.Canvas(packet, reportlab.lib.pagesizes.letter)
+        canvas = reportlab.pdfgen.canvas.Canvas(
+            packet, reportlab.lib.pagesizes.letter, initialFontName="Times-Roman", initialFontSize=14
+        )
         self._fill_emplacements(canvas, page_num)
         packet.seek(0)
         return PyPDF2.PdfFileReader(packet)

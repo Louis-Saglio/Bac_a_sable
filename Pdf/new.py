@@ -42,5 +42,6 @@ template["tenant_birthday"] = "07/09/1998"
 template["tenant_address"] = "lorem ipsum dolor sit amet donec adipiscing consequetur etiam"
 template["owner_address"] = "smerjognf  ojsfdngvo osdij fôsijfdôsrigjôijsfog ijpij insdfunv usdf"
 template["storage_address"] = "smerjognf  ojsfdngvo osdij fôsijfdôsrigjôijsfog ijpij insdfunv usdf"
+template["signature date_day"] = 0o10
 
 template.render()
