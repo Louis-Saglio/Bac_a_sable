@@ -57,23 +57,12 @@ template = api.PdfTemplate(
     emplacements={
         0: {
             # Un emplacement peut-il avoir plusieurs variable ? Utiliser le name comme clef ?
-            (175, 715): [{"name": "tenant_full_name", "line_size": 30}],
-            (175, 600): [{"name": "tenant_address", "line_size": 30}],
+            (175, 715): {"name": "tenant_full_name", "line_size": 30},
+            (175, 600): {"name": "tenant_address", "line_size": 30},
+            (175, 400): {"name": "owner_full_name", "line_size": 30},
         },
-        1: {
-            (175, 600): [{"name": "owner_full_name", "line_size": 10}]
-        }
-    }
+        1: {(175, 600): {"name": "owner_full_name", "line_size": 10}},
+    },
 )
 
-
-template["tenant_full_name"] = "Louis Saglio"
-template["tenant_full_name"] = "Audrey Jestocke"
-template["owner_full_name"] = "Jean Dupont"
-# template["tenant_birthday"] = "07/09/1998"
-template["tenant_address"] = "lorem ipsum dolor sit amet donec adipiscing consequetur etiam"
-# template["owner_address"] = "smerjognf  ojsfdngvo osdij fôsijfdôsrigjôijsfog ijpij insdfunv usdf"
-# template["storage_address"] = "smerjognf  ojsfdngvo osdij fôsijfdôsrigjôijsfog ijpij insdfunv usdf"
-# template["signature date_day"] = 0o10
-
-template.render()
+template.render(tenant_full_name="Louis Saglio", tenant_address="lorem ipsum address", owner_full_name="Jean Dupont")
