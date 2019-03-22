@@ -3,3 +3,7 @@ x préciser le numéro de la page de la zone de texte
   réutiliser une variable à plusieurs endroits
   vérifier la taille du texte sur la base de la police
   bug : toute les lignes d'un emplacement sont supposées avoir la même taille
+
+x le format du paramètre emplacements doit être plus explicite
+  l'algorithme de placement des variables doit fonctionner en mode page par page
+  le contexte du template doit être passé en argumet de render plutôt que d'être setter dans le state de l'objet via __setattr__

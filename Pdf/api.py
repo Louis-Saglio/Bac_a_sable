@@ -10,39 +10,42 @@ class PdfException(Exception):
 
 
 class PdfTemplate:
-    def __init__(self, base_file_path, output_file_path, emplacements):
+    def __init__(self, base_file_path, emplacements):
         self.base_file_path = base_file_path
-        self.output_file_path = output_file_path
-        self.emplacements = emplacements
-        self.values = {}
+        self.emplacements_available = emplacements
+        self.pages_to_fill = set()
 
     def __setitem__(self, key, value):
-        if key in self.emplacements:
-            self.values[key] = str(value)
-        else:
-            raise PdfException("There is no emplacement named {} in this PDF template".format(key))
+        # Comment stocker la valeur donnée pour remplir un emplacement ? Stocker dans le dictionnaire emplacements ?
+        # Mais alors, comment savoir s'il faut modifier une page ?
+        variable_exists = False
+        for page_num, page_data in self.emplacements_available.items():
+            for emplacement_data in page_data.values():
+                for variable_data in emplacement_data:
+                    if variable_data["name"] == key:
+                        if not variable_exists:
+                            variable_exists = True
+                        variable_data["value"] = value
+                        self.pages_to_fill.add(page_num)
+        if not variable_exists:
+            raise PdfException("There is no emplacement named '{}' in this PDF template".format(key))
 
-    def _fill_emplacements(self, canvas, page_num):
-        for name, value in self.values.items():
-            if value is None:
-                continue
-            emplacement_data = self.emplacements[name]
-            line_nbr = len(emplacement_data)
-            for line_num in range(line_nbr):
-                if emplacement_data[line_num][0] != page_num:
-                    continue
-                line_size = emplacement_data[line_num][3]
-                chunk = value[line_size * line_num: (line_size * line_num + line_size)]
-                if chunk:
-                    canvas.drawString(*emplacement_data[line_num][1:3], chunk)
-        canvas.save()
+    def _fill_emplacements_of_page(self, canvas, page_num):
+        for position, emplacement_data in self.emplacements_available[page_num].items():
+            for variable_data in emplacement_data:
+                if "value" in variable_data:
+                    canvas.drawString(*position, variable_data["value"])
 
     def _build_watermark_pdf_filled_with_values_for_page(self, page_num):
         packet = io.BytesIO()
         canvas = reportlab.pdfgen.canvas.Canvas(
             packet, reportlab.lib.pagesizes.letter, initialFontName="Times-Roman", initialFontSize=14
         )
-        self._fill_emplacements(canvas, page_num)
+        for position, emplacement_data in self.emplacements_available[page_num].items():
+            for variable_data in emplacement_data:
+                if "value" in variable_data:
+                    canvas.drawString(*position, variable_data["value"])
+        canvas.save()
         packet.seek(0)
         return PyPDF2.PdfFileReader(packet)
 
@@ -54,12 +57,12 @@ class PdfTemplate:
 
             for page_num in range(reader.getNumPages()):
                 page = reader.getPage(page_num)
-                watermark = self._build_watermark_pdf_filled_with_values_for_page(page_num)
-                if watermark.getNumPages() > 0:
-                    # A strange behaviour of PyPDF makes PdfFileReader built with a blank canvas contains no page at all
-                    # It is useful to check if there is anything we need to add to the actual pdf page
-                    page.mergePage(watermark.getPage(0))
+                if page_num in self.pages_to_fill:
+                    page.mergePage(self._build_watermark_pdf_filled_with_values_for_page(page_num).getPage(0))
                 output.addPage(page)
 
-            with open(self.output_file_path, "wb") as final:
+            # For debug purposes. Remove in production.
+            with open("out.pdf", "wb") as final:
                 output.write(final)
+
+        return output

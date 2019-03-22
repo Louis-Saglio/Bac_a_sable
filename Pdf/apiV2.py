@@ -1,3 +1,6 @@
+"""Suspended"""
+
+
 class TextArea:
     def __init__(self, page_num, max_size, x, y):
         self.y = y
