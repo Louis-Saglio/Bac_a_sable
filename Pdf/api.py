@@ -1,15 +1,13 @@
 import io
-from typing import Set, Dict, Any, Tuple
+from collections import namedtuple
+from typing import Set, Dict, Any, Tuple, BinaryIO, Optional
 
 import PyPDF2
 import reportlab.lib.pagesizes
 import reportlab.pdfgen.canvas
 
 
-class PdfTemplateVariable:
-    def __init__(self, name: str, line_size: int):
-        self.name = name
-        self.line_size = line_size
+PdfTemplateVariable = namedtuple("PdfTemplateVariable", ("name", "line_size"))
 
 
 PageData = Dict[Tuple[int, int], PdfTemplateVariable]
@@ -21,7 +19,7 @@ def build_filled_pdf_page(page_data: PageData, values: Dict[str, Any]) -> PyPDF2
         packet, reportlab.lib.pagesizes.letter, initialFontName="Times-Roman", initialFontSize=14
     )
     for position, emplacement_data in page_data.items():
-        canvas.drawString(*position, str(values[emplacement_data.name])[:emplacement_data.line_size])
+        canvas.drawString(*position, str(values.get(emplacement_data.name, ""))[: emplacement_data.line_size])
     canvas.save()
     packet.seek(0)
     return PyPDF2.PdfFileReader(packet)
@@ -44,7 +42,7 @@ class PdfTemplate:
                     break
         return pages_to_fill
 
-    def render(self, **values: Any) -> PyPDF2.PdfFileWriter:
+    def render(self, write_to_file: BinaryIO = None, **values: Any) -> Tuple[PyPDF2.PdfFileWriter, Optional[BinaryIO]]:
         pages_to_fill = self.get_pages_to_fill_numbers(values)
 
         output = PyPDF2.PdfFileWriter()
@@ -58,8 +56,7 @@ class PdfTemplate:
                     page.mergePage(build_filled_pdf_page(self.emplacements[page_num], values).getPage(0))
                 output.addPage(page)
 
-            # For debug purposes. Remove in production.
-            with open("out.pdf", "wb") as final:
-                output.write(final)
+            if write_to_file:
+                output.write(write_to_file)
 
-        return output
+        return output, write_to_file
