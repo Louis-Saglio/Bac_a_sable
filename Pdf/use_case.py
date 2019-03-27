@@ -32,10 +32,11 @@ template = api.PdfTemplate(
 )
 
 with open("out.pdf", "wb") as f:
-    template.render(
-        write_to_file=f,
+    out = template.render(
         tenant_full_name="Louis Saglio",
         tenant_address_1="lorem ipsum address",
         owner_full_name="Jean Dupont",
         tenant_address_2="210 cours Victor Hugo",
+        tenant_city="Langon"
     )
+    out.write(f)
