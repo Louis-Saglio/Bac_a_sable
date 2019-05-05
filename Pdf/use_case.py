@@ -37,6 +37,6 @@ with open("out.pdf", "wb") as f:
         tenant_address_1="lorem ipsum address",
         owner_full_name="Jean Dupont",
         tenant_address_2="210 cours Victor Hugo",
-        tenant_city="Langon"
+        tenant_city="Langon",
     )
     out.write(f)
