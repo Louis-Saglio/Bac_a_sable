@@ -38,7 +38,11 @@ class Particle:
 def run_simulation(particles):
     for particle in particles:
         for other_particle in particles:
-            x_part = (particle.position.x - other_particle.position.x) / (particle.position.y - other_particle.position.y)
-            y_part = (particle.position.y - other_particle.position.y) / (particle.position.x - other_particle.position.x)
+            x_part = (particle.position.x - other_particle.position.x) / (
+                particle.position.y - other_particle.position.y
+            )
+            y_part = (particle.position.y - other_particle.position.y) / (
+                particle.position.x - other_particle.position.x
+            )
             force = Force(x_part, y_part)
             particle.forces.append(force)
