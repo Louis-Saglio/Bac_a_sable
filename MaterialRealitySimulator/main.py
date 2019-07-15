@@ -1,3 +1,4 @@
+import time
 from random import randint
 import pygame
 
@@ -13,14 +14,15 @@ class Counter:
 
 
 class Particle:
-    def __init__(self, position):
+    def __init__(self, position, mass):
+        self.mass = mass
         self.position = position
 
 
 def center_attraction_law(particle):
     for i, axe in enumerate(particle.position):
         if axe != 0:
-            particle.position[i] -= axe / abs(axe)
+            particle.position[i] -= (axe / abs(axe)) * (particle.mass ** (1/3))
 
 
 def display_particles(window, particles, color, size=1):
@@ -39,12 +41,13 @@ def display_particles(window, particles, color, size=1):
 
 def main(time_counter):
     laws = [center_attraction_law]
-    particles = {Particle([randint(-500, 500), randint(-500, 500)]) for _ in range(1000)}
+    particles = {Particle([randint(-500, 500), randint(-500, 500)], randint(0, 99)) for _ in range(1000)}
 
     pygame.display.init()
     window = pygame.display.set_mode((1000, 1000))
 
     while True:
+        time.sleep(0.05)
         display_particles(window, particles, (0, 0, 0))
         for law in laws:
             for particle in particles:
