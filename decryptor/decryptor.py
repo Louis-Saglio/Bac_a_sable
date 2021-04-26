@@ -2,6 +2,7 @@ import os
 import pickle
 import random
 import string
+import time
 from statistics import mean
 
 DECYPHERED_STRINGS = string.ascii_lowercase + " " + "àéèêîôâçùû"
@@ -126,14 +127,19 @@ def compute_sequence_probability(text: str) -> dict[str, float]:
 
 
 def score_text(text: str, sequence_probability: dict[str, float]) -> float:
-    score = 0
-    letters = set(text)
-    for i in letters:
-        for j in letters:
-            for k in letters:
-                pair = f"{i}{j}{k}"
-                score += text.count(pair) * sequence_probability.get(pair, 0)
-    return (score / len(text)) * 100
+    if text not in score_text.score_text_hashes:
+        score = 0
+        letters = set(text)
+        for i in letters:
+            for j in letters:
+                for k in letters:
+                    pair = f"{i}{j}{k}"
+                    score += text.count(pair) * sequence_probability.get(pair, 0)
+        score_text.score_text_hashes[text] = (score / len(text)) * 100
+    return score_text.score_text_hashes[text]
+
+
+score_text.score_text_hashes = {}
 
 
 def main(cyphered_text: str):
@@ -141,13 +147,12 @@ def main(cyphered_text: str):
     with open("data/text_fr") as f:
         seq_proba_table = compute_sequence_probability(clean_text(f.read(), DECYPHERED_STRINGS))
     solution = evolve(
-        pop_size=300, duration=100, mutation_proba=0.8, seq_proba_table=seq_proba_table, text=cyphered_text,
+        pop_size=300, duration=20, mutation_proba=0.8, seq_proba_table=seq_proba_table, text=cyphered_text,
         selection_pressure=100,
     )
     print(cyphered_text)
     decyphered_text = decypher_text(cyphered_text, solution.table)
     print(decyphered_text)
-    input()
     print(clean_text(text_, DECYPHERED_STRINGS))
     print(score_text(decyphered_text, seq_proba_table))
     print(score_text(text_, seq_proba_table))
@@ -162,9 +167,11 @@ if __name__ == '__main__':
             "mais il s’agissait de virus installés sur des machines isolées. aujourd’hui, c’est une sorte de virus " \
             "qui a pris place sur tous les ordinateurs de la planète. et en plus, ce virus, nommé prélude, " \
             "avait un soupçon, non négligeable, d’intelligence. "
+    start = time.time()
     main(
         cypher_text(
             clean_text(text_, DECYPHERED_STRINGS),
             build_random_cypher_table(CYPHERED_STRINGS, DECYPHERED_STRINGS),
         )
     )
+    print(round(time.time() - start, 3))
