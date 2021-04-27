@@ -10,7 +10,7 @@ CYPHERED_STRINGS = string.ascii_uppercase + "&" + "àéèêîôâçùû".upper()
 
 
 class Individual:
-    def __init__(self, table: dict[str, str], seq_proba_table: dict[str, float]):
+    def __init__(self, table: dict[str, str], seq_proba_table: dict[tuple[str, str, str], float]):
         self._table = table
         self._score_cache = None
         self._seq_proba_table = seq_proba_table
@@ -55,7 +55,7 @@ def evolve(
     pop_size: int,
     duration: int,
     mutation_proba: float,
-    seq_proba_table: dict[str, float],
+    seq_proba_table: dict[tuple[str, str, str], float],
     selection_pressure: int,
     text: str,
 ) -> Individual:
@@ -108,9 +108,10 @@ def decypher_text(cyphered_text: str, table: dict[str, str], unknown_char="?") -
     return "".join(text)
 
 
-def compute_sequence_probability(text: str) -> dict[str, float]:
+def compute_sequence_probability(text: str) -> dict[tuple[str, str, str], float]:
     cache_path = 'data/seq_proba_table.pkl'
     if os.path.exists(cache_path):
+        print("loading seq proba table from cache")
         with open(cache_path, "rb") as f:
             result = pickle.load(f)
     else:
@@ -120,26 +121,24 @@ def compute_sequence_probability(text: str) -> dict[str, float]:
             for j in letters:
                 for k in letters:
                     pair = f"{i}{j}{k}"
-                    result[pair] = text.count(pair) / (len(text) / 2)
+                    result[(i, j, k)] = text.count(pair) / (len(text) / 2)
         with open(cache_path, "wb") as f:
             pickle.dump(result, f)
     return result
 
 
-def score_text(text: str, sequence_probability: dict[str, float]) -> float:
-    if text not in score_text.score_text_hashes:
-        score = 0
-        letters = set(text)
-        for i in letters:
-            for j in letters:
-                for k in letters:
-                    pair = f"{i}{j}{k}"
-                    score += text.count(pair) * sequence_probability.get(pair, 0)
-        score_text.score_text_hashes[text] = (score / len(text)) * 100
-    return score_text.score_text_hashes[text]
-
-
-score_text.score_text_hashes = {}
+def score_text(text: str, sequence_probability: dict[tuple[str, str, str], float]) -> float:
+    occurrences_count = {}
+    for triplet in zip(text, text[1:], text[2:]):
+        if triplet not in occurrences_count:
+            occurrences_count[triplet] = 0
+        occurrences_count[triplet] += 1
+    score = 0
+    for triplet, count in occurrences_count.items():
+        # todo : if a group of letters appears more frequently than in normal french it will be rewarded
+        score += count * sequence_probability.get(triplet, 0)
+    score = (score / len(text) * 100)
+    return score
 
 
 def main(cyphered_text: str):
