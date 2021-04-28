@@ -20,28 +20,29 @@ def clean_text(text: str, accepted: str) -> str:
     return cleaned_text
 
 
-def compute_sequence_probability() -> dict[tuple[str, str, str], float]:
+def compute_sequence_probability(use_cache=False) -> dict[tuple[str, str, str], float]:
     with open('data/text_fr') as f:
         text = clean_text(f.read(), DECYPHERED_STRINGS)
     cache_path = 'data/seq_proba_table.pkl'
-    if os.path.exists(cache_path):
+    if use_cache and os.path.exists(cache_path):
         print("loading seq proba table from cache")
         with open(cache_path, "rb") as f:
             result = pickle.load(f)
     else:
+        occurrences_count = {}
         result = {}
-        letters = set(text)
-        for i in letters:
-            for j in letters:
-                for k in letters:
-                    pair = f"{i}{j}{k}"
-                    result[(i, j, k)] = text.count(pair) / (len(text) / 2)
+        for triplet in zip(text, text[1:], text[2:]):
+            if triplet not in occurrences_count:
+                occurrences_count[triplet] = 0
+            occurrences_count[triplet] += 1
+        for triplet, count in occurrences_count.items():
+            result[triplet] = count / len(text)
         with open(cache_path, "wb") as f:
             pickle.dump(result, f)
     return result
 
 
-SEQ_PROBA_TABLE = compute_sequence_probability()
+SEQ_PROBA_TABLE = compute_sequence_probability(use_cache=False)
 
 
 class Individual:
@@ -138,7 +139,7 @@ def score_text(text: str) -> float:
 def main(cyphered_text: str):
     cyphered_text = clean_text(cyphered_text, CYPHERED_STRINGS)
     solution = evolve(
-        pop_size=300, duration=20, mutation_proba=0.8, text=cyphered_text, selection_pressure=100,
+        pop_size=300, duration=50, mutation_proba=0.8, text=cyphered_text, selection_pressure=100,
     )
     print(cyphered_text)
     decyphered_text = decypher_text(cyphered_text, solution.table)
