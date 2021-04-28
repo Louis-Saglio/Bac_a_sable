@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b036ff33-ea4a-4094-9ac2-b0050627dd40" name="Default" comment="Add cache on score text for a 30% speed improvement">
+    <list default="true" id="b036ff33-ea4a-4094-9ac2-b0050627dd40" name="Default" comment="Significantly improve the speed of the soring algorithm">
+      <change afterPath="$PROJECT_DIR$/numba_sandbox.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Bac_a_sable.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Bac_a_sable.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/decryptor/decryptor.py" beforeDir="false" afterPath="$PROJECT_DIR$/decryptor/decryptor.py" afterDir="false" />
     </list>
@@ -101,11 +104,12 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="add_unversioned_files" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/decryptor/data" />
+    <property name="last_opened_file_path" value="$USER_HOME$/.venvs" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -206,6 +210,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="numba_sandbox" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Bac_a_sable" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/numba_sandbox.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="js.build_tools.gulp">
       <node-interpreter>project</node-interpreter>
       <node-options />
@@ -234,10 +260,12 @@
       <item itemvalue="Python.main" />
       <item itemvalue="Python.main (1)" />
       <item itemvalue="Python.decryptor" />
+      <item itemvalue="Python.numba_sandbox" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.decryptor" />
+        <item itemvalue="Python.numba_sandbox" />
         <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.main" />
       </list>
@@ -255,7 +283,9 @@
       <option name="presentableId" value="Default" />
       <updated>1499093189635</updated>
       <workItem from="1619460469359" duration="10770000" />
-      <workItem from="1619543153264" duration="1976000" />
+      <workItem from="1619543153264" duration="11839000" />
+      <workItem from="1619609379688" duration="1841000" />
+      <workItem from="1619633678202" duration="2719000" />
     </task>
     <task id="LOCAL-00001" summary="05/07/2017">
       <created>1499275142615</created>
@@ -278,7 +308,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619476760853</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Significantly improve the speed of the soring algorithm">
+      <created>1619545382263</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1619545382263</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -317,10 +354,12 @@
     <MESSAGE value="05/07/2017" />
     <MESSAGE value="Add a program which is able to crack basic encryption with the help of statistics and a genetic algorithm" />
     <MESSAGE value="Add cache on score text for a 30% speed improvement" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add cache on score text for a 30% speed improvement" />
+    <MESSAGE value="Significantly improve the speed of the soring algorithm" />
+    <option name="LAST_COMMIT_MESSAGE" value="Significantly improve the speed of the soring algorithm" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Bac_a_sable$decryptor.coverage" NAME="decryptor Coverage Results" MODIFIED="1619545226037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/decryptor" />
+    <SUITE FILE_PATH="coverage/Bac_a_sable$numba_sandbox.coverage" NAME="numba_sandbox Coverage Results" MODIFIED="1619644768607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Bac_a_sable$decryptor.coverage" NAME="decryptor Coverage Results" MODIFIED="1619645482704" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/decryptor" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Asynchrone/main.py">

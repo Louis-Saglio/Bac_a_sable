@@ -9,32 +9,57 @@ DECYPHERED_STRINGS = string.ascii_lowercase + " " + "àéèêîôâçùû"
 CYPHERED_STRINGS = string.ascii_uppercase + "&" + "àéèêîôâçùû".upper()
 
 
+def clean_text(text: str, accepted: str) -> str:
+    cleaned_text = []
+    accepted_chars = set(accepted)
+    for char in text:
+        if char in accepted_chars:
+            cleaned_text.append(char)
+    cleaned_text = "".join(cleaned_text)
+    cleaned_text = cleaned_text.replace("  ", "")
+    return cleaned_text
+
+
+def compute_sequence_probability() -> dict[tuple[str, str, str], float]:
+    with open('data/text_fr') as f:
+        text = clean_text(f.read(), DECYPHERED_STRINGS)
+    cache_path = 'data/seq_proba_table.pkl'
+    if os.path.exists(cache_path):
+        print("loading seq proba table from cache")
+        with open(cache_path, "rb") as f:
+            result = pickle.load(f)
+    else:
+        result = {}
+        letters = set(text)
+        for i in letters:
+            for j in letters:
+                for k in letters:
+                    pair = f"{i}{j}{k}"
+                    result[(i, j, k)] = text.count(pair) / (len(text) / 2)
+        with open(cache_path, "wb") as f:
+            pickle.dump(result, f)
+    return result
+
+
+SEQ_PROBA_TABLE = compute_sequence_probability()
+
+
 class Individual:
-    def __init__(self, table: dict[str, str], seq_proba_table: dict[tuple[str, str, str], float]):
+    def __init__(self, table: dict[str, str]):
         self._table = table
         self._score_cache = None
-        self._seq_proba_table = seq_proba_table
 
     @property
     def table(self):
         return self._table.copy()
 
-    @property
-    def seq_proba_table(self):
-        return self._seq_proba_table
-
-    @seq_proba_table.setter
-    def seq_proba_table(self, value):
-        self._score_cache = None
-        self._seq_proba_table = value
-
     def score(self, text) -> float:
         if self._score_cache is None:
-            self._score_cache = score_text(decypher_text(text, self._table), self.seq_proba_table)
+            self._score_cache = score_text(decypher_text(text, self._table))
         return self._score_cache
 
     def clone(self):
-        return Individual(self._table.copy(), self.seq_proba_table)
+        return Individual(self._table.copy())
 
     def mutate(self):
         keys = list(self._table)
@@ -43,23 +68,22 @@ class Individual:
         self._score_cache = None
 
 
-def build_random_solution(seq_proba_table) -> Individual:
+def build_random_solution() -> Individual:
     c_strings = list(CYPHERED_STRINGS)
     d_strings = list(DECYPHERED_STRINGS)
     random.shuffle(c_strings)
     random.shuffle(d_strings)
-    return Individual({c_string: d_string for c_string, d_string in zip(c_strings, d_strings)}, seq_proba_table)
+    return Individual({c_string: d_string for c_string, d_string in zip(c_strings, d_strings)})
 
 
 def evolve(
     pop_size: int,
     duration: int,
     mutation_proba: float,
-    seq_proba_table: dict[tuple[str, str, str], float],
     selection_pressure: int,
     text: str,
 ) -> Individual:
-    population = [build_random_solution(seq_proba_table) for _ in range(pop_size)]
+    population = [build_random_solution() for _ in range(pop_size)]
     for gen in range(duration):
         population: list[Individual] = sorted(population, key=lambda x: x.score(text), reverse=True)
         population = population[:len(population) // selection_pressure]
@@ -73,17 +97,6 @@ def evolve(
         scores = [i.score(text) for i in population]
         print(str(len(population)).center(6), str(gen).center(6), *[f"{f(scores):.3e}" for f in (max, mean, min)] + [decypher_text(text, population[0].table)])
     return population[0]
-
-
-def clean_text(text: str, accepted: str) -> str:
-    cleaned_text = []
-    accepted_chars = set(accepted)
-    for char in text:
-        if char in accepted_chars:
-            cleaned_text.append(char)
-    cleaned_text = "".join(cleaned_text)
-    cleaned_text = cleaned_text.replace("  ", "")
-    return cleaned_text
 
 
 def build_random_cypher_table(cyphered_strings: str, decyphered_strings: str) -> dict[str, str]:
@@ -108,26 +121,7 @@ def decypher_text(cyphered_text: str, table: dict[str, str], unknown_char="?") -
     return "".join(text)
 
 
-def compute_sequence_probability(text: str) -> dict[tuple[str, str, str], float]:
-    cache_path = 'data/seq_proba_table.pkl'
-    if os.path.exists(cache_path):
-        print("loading seq proba table from cache")
-        with open(cache_path, "rb") as f:
-            result = pickle.load(f)
-    else:
-        result = {}
-        letters = set(text)
-        for i in letters:
-            for j in letters:
-                for k in letters:
-                    pair = f"{i}{j}{k}"
-                    result[(i, j, k)] = text.count(pair) / (len(text) / 2)
-        with open(cache_path, "wb") as f:
-            pickle.dump(result, f)
-    return result
-
-
-def score_text(text: str, sequence_probability: dict[tuple[str, str, str], float]) -> float:
+def score_text(text: str) -> float:
     occurrences_count = {}
     for triplet in zip(text, text[1:], text[2:]):
         if triplet not in occurrences_count:
@@ -136,25 +130,22 @@ def score_text(text: str, sequence_probability: dict[tuple[str, str, str], float
     score = 0
     for triplet, count in occurrences_count.items():
         # todo : if a group of letters appears more frequently than in normal french it will be rewarded
-        score += count * sequence_probability.get(triplet, 0)
+        score += count * SEQ_PROBA_TABLE.get(triplet, 0)
     score = (score / len(text) * 100)
     return score
 
 
 def main(cyphered_text: str):
     cyphered_text = clean_text(cyphered_text, CYPHERED_STRINGS)
-    with open("data/text_fr") as f:
-        seq_proba_table = compute_sequence_probability(clean_text(f.read(), DECYPHERED_STRINGS))
     solution = evolve(
-        pop_size=300, duration=20, mutation_proba=0.8, seq_proba_table=seq_proba_table, text=cyphered_text,
-        selection_pressure=100,
+        pop_size=300, duration=20, mutation_proba=0.8, text=cyphered_text, selection_pressure=100,
     )
     print(cyphered_text)
     decyphered_text = decypher_text(cyphered_text, solution.table)
     print(decyphered_text)
     print(clean_text(text_, DECYPHERED_STRINGS))
-    print(score_text(decyphered_text, seq_proba_table))
-    print(score_text(text_, seq_proba_table))
+    print(score_text(decyphered_text))
+    print(score_text(text_))
 
 
 if __name__ == '__main__':
