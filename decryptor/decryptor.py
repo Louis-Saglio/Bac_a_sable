@@ -1,22 +1,22 @@
 import os
 import pickle
 import random
-import string
 import time
 from statistics import mean
+from typing import Callable, Any
 
-DECYPHERED_STRINGS = string.ascii_lowercase + " " + "àéèêîôâçùû"
-CYPHERED_STRINGS = string.ascii_uppercase + "&" + "àéèêîôâçùû".upper()
+
+DECYPHERED_STRINGS = "0123456789abcdefghijklmnopqrstuvwxyzàéèêîôâçùûï!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ ’œ"
 
 
 def clean_text(text: str, accepted: str) -> str:
+    text = text.lower()
     cleaned_text = []
     accepted_chars = set(accepted)
     for char in text:
         if char in accepted_chars:
             cleaned_text.append(char)
     cleaned_text = "".join(cleaned_text)
-    cleaned_text = cleaned_text.replace("  ", "")
     return cleaned_text
 
 
@@ -69,56 +69,70 @@ class Individual:
         self._score_cache = None
 
 
-def build_random_solution() -> Individual:
-    c_strings = list(CYPHERED_STRINGS)
-    d_strings = list(DECYPHERED_STRINGS)
+def build_random_individual(c_strings, d_strings) -> Individual:
+    assert len(c_strings) == len(d_strings), (len(c_strings), len(d_strings))
+    c_strings = list(c_strings)
+    d_strings = list(d_strings)
     random.shuffle(c_strings)
     random.shuffle(d_strings)
     return Individual({c_string: d_string for c_string, d_string in zip(c_strings, d_strings)})
 
 
 def evolve(
+    text: str,
     pop_size: int,
     duration: int,
     mutation_proba: float,
     selection_pressure: int,
-    text: str,
+    build_func: Callable[[Any, ...], Individual],
+    build_func_kwargs: dict[str, Any]
 ) -> Individual:
-    population = [build_random_solution() for _ in range(pop_size)]
+    population = [build_func(**build_func_kwargs) for _ in range(pop_size)]
     for gen in range(duration):
-        population: list[Individual] = sorted(population, key=lambda x: x.score(text), reverse=True)
-        population = population[:len(population) // selection_pressure]
-        new_individuals = []
-        for i in range(selection_pressure - 1):
-            new_individuals.extend([indiv.clone() for indiv in population])
-        population.extend(new_individuals)
-        for indiv in population[1:]:
-            if random.random() < mutation_proba:
-                indiv.mutate()
-        scores = [i.score(text) for i in population]
-        print(str(len(population)).center(6), str(gen).center(6), *[f"{f(scores):.3e}" for f in (max, mean, min)] + [decypher_text(text, population[0].table)])
+        try:
+            population: list[Individual] = sorted(population, key=lambda x: x.score(text), reverse=True)
+            population = population[:len(population) // selection_pressure]
+            new_individuals = []
+            for i in range(selection_pressure - 1):
+                new_individuals.extend([indiv.clone() for indiv in population])
+            population.extend(new_individuals)
+            for indiv in population[1:]:
+                if random.random() < mutation_proba:
+                    indiv.mutate()
+            scores = [i.score(text) for i in population]
+            print(
+                str(len(population)).center(6), str(gen).center(6),
+                *[f"{f(scores):.9f}" for f in (max,)] + [decypher_text(text, population[0].table)],
+            )
+        except KeyboardInterrupt:
+            break
     return population[0]
 
 
-def build_random_cypher_table(cyphered_strings: str, decyphered_strings: str) -> dict[str, str]:
-    c_strings = list(cyphered_strings)
+def build_random_cypher_table(decyphered_strings: str) -> dict[str, str]:
+    c_strings, i = [], 21
+    while len(c_strings) != len(decyphered_strings):
+        char = chr(i)
+        if char not in decyphered_strings:
+            c_strings.append(char)
+        i += 1
     d_strings = list(decyphered_strings)
     random.shuffle(c_strings)
     random.shuffle(d_strings)
     return dict(zip(d_strings, c_strings))
 
 
-def cypher_text(text: str, table: dict[str, str], unknown_char="?") -> str:
+def cypher_text(text: str, table: dict[str, str]) -> str:
     cyphered_text = []
-    for char in text:
-        cyphered_text.append(table.get(char, unknown_char))
+    for char in text.replace('\n', ' '):
+        cyphered_text.append(table[char])
     return "".join(cyphered_text)
 
 
-def decypher_text(cyphered_text: str, table: dict[str, str], unknown_char="?") -> str:
+def decypher_text(cyphered_text: str, table: dict[str, str],) -> str:
     text = []
     for char in cyphered_text:
-        text.append(table.get(char, unknown_char))
+        text.append(table[char])
     return "".join(text)
 
 
@@ -131,38 +145,43 @@ def score_text(text: str) -> float:
     score = 0
     for triplet, count in occurrences_count.items():
         # todo : if a group of letters appears more frequently than in normal french it will be rewarded
-        score += count * SEQ_PROBA_TABLE.get(triplet, 0)
-    score = (score / len(text) * 100)
+        score += -abs(count / len(text) - SEQ_PROBA_TABLE.get(triplet, 0))
+    score = score
     return score
 
 
-def main(cyphered_text: str):
-    cyphered_text = clean_text(cyphered_text, CYPHERED_STRINGS)
+def main():
+    with open('data/tte_short_fr') as f:
+        text = f.read()
+    text = clean_text(text, DECYPHERED_STRINGS)
+    cypher_table = build_random_cypher_table(DECYPHERED_STRINGS)
+    cyphered_text = cypher_text(text, cypher_table)
     solution = evolve(
-        pop_size=300, duration=50, mutation_proba=0.8, text=cyphered_text, selection_pressure=100,
+        text=cyphered_text,
+        pop_size=3000,
+        duration=300,
+        mutation_proba=0.9,
+        selection_pressure=100,
+        build_func=build_random_individual,
+        build_func_kwargs={'c_strings': cypher_table.values(), 'd_strings': DECYPHERED_STRINGS},
     )
     print(cyphered_text)
     decyphered_text = decypher_text(cyphered_text, solution.table)
     print(decyphered_text)
-    print(clean_text(text_, DECYPHERED_STRINGS))
+    print(text)
     print(score_text(decyphered_text))
-    print(score_text(text_))
+    print(score_text(text))
+
+
+def test():
+    cypher_table = build_random_cypher_table(DECYPHERED_STRINGS)
+    build_random_individual(**{'c_strings': cypher_table.values(), 'd_strings': DECYPHERED_STRINGS})
 
 
 if __name__ == '__main__':
-    random.seed(1)
-    text_ = "david avait dû s’asseoir lorsqu’il avait entendu le prénom florence. il était devenu blanc un instant. " \
-            "il allait peut-être perdre florence avant même de lui avoir avoué son amour. il devait empêcher prélude " \
-            "de continuer dans son délire. mais comment pouvait-il stopper ce parasite créé par lui quelques années " \
-            "auparavant ? ce n’était pas un adversaire ordinaire. david avait déjà détruit plus d’un virus, " \
-            "mais il s’agissait de virus installés sur des machines isolées. aujourd’hui, c’est une sorte de virus " \
-            "qui a pris place sur tous les ordinateurs de la planète. et en plus, ce virus, nommé prélude, " \
-            "avait un soupçon, non négligeable, d’intelligence. "
+    random.seed(0)
     start = time.time()
-    main(
-        cypher_text(
-            clean_text(text_, DECYPHERED_STRINGS),
-            build_random_cypher_table(CYPHERED_STRINGS, DECYPHERED_STRINGS),
-        )
-    )
-    print(round(time.time() - start, 3))
+    main()
+    # test()
+    print('\n', '-' * 50, round(time.time() - start, 4), sep='\n')
+    # todo : count the number of valid words in a given solution to improve scoring

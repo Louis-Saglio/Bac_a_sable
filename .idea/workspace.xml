@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b036ff33-ea4a-4094-9ac2-b0050627dd40" name="Default" comment="Significantly improve the speed of the soring algorithm">
-      <change afterPath="$PROJECT_DIR$/numba_sandbox.py" afterDir="false" />
+    <list default="true" id="b036ff33-ea4a-4094-9ac2-b0050627dd40" name="Default" comment="Significantly improve the speed of the sequence proba table builder algorithm">
+      <change afterPath="$PROJECT_DIR$/decryptor/numba_decryptor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/decryptor/decryptor.py" beforeDir="false" afterPath="$PROJECT_DIR$/decryptor/decryptor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -282,7 +283,7 @@
       <workItem from="1619460469359" duration="10770000" />
       <workItem from="1619543153264" duration="11839000" />
       <workItem from="1619609379688" duration="1841000" />
-      <workItem from="1619633678202" duration="3506000" />
+      <workItem from="1619633678202" duration="16685000" />
     </task>
     <task id="LOCAL-00001" summary="05/07/2017">
       <created>1499275142615</created>
@@ -319,7 +320,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619645835466</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Significantly improve the speed of the sequence proba table builder algorithm">
+      <created>1619646416676</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1619646416676</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -360,11 +368,12 @@
     <MESSAGE value="Add cache on score text for a 30% speed improvement" />
     <MESSAGE value="Significantly improve the speed of the soring algorithm" />
     <MESSAGE value="Make SEQ_PROBA_TABLE a constant" />
-    <option name="LAST_COMMIT_MESSAGE" value="Make SEQ_PROBA_TABLE a constant" />
+    <MESSAGE value="Significantly improve the speed of the sequence proba table builder algorithm" />
+    <option name="LAST_COMMIT_MESSAGE" value="Significantly improve the speed of the sequence proba table builder algorithm" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Bac_a_sable$numba_sandbox.coverage" NAME="numba_sandbox Coverage Results" MODIFIED="1619644768607" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Bac_a_sable$decryptor.coverage" NAME="decryptor Coverage Results" MODIFIED="1619646128230" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/decryptor" />
+    <SUITE FILE_PATH="coverage/Bac_a_sable$decryptor.coverage" NAME="decryptor Coverage Results" MODIFIED="1619736789146" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/decryptor" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Asynchrone/main.py">
