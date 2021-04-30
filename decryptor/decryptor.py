@@ -23,9 +23,7 @@ def clean_text(text: str, accepted: str) -> str:
     return cleaned_text
 
 
-def compute_sequence_probability(use_cache=False) -> dict[tuple[str, str, str], float]:
-    with open('data/text_fr') as f:
-        text = clean_text(f.read(), DECYPHERED_STRINGS)
+def compute_sequence_probability(text: str, use_cache=False) -> dict[tuple[str, str, str], float]:
     cache_path = 'data/seq_proba_table.pkl'
     if use_cache and os.path.exists(cache_path):
         print("loading seq proba table from cache")
@@ -45,7 +43,17 @@ def compute_sequence_probability(use_cache=False) -> dict[tuple[str, str, str], 
     return result
 
 
-SEQ_PROBA_TABLE = compute_sequence_probability(use_cache=False)
+def build_possible_words_list(text: str) -> set[str]:
+    return set(text.split())
+
+
+def build_stat_models() -> tuple[dict[tuple[str, str, str], float], set[str]]:
+    with open('data/text_en') as f:
+        text = clean_text(f.read(), DECYPHERED_STRINGS)
+    return compute_sequence_probability(text, use_cache=False), build_possible_words_list(text)
+
+
+SEQ_PROBA_TABLE, POSSIBLE_WORDS = build_stat_models()
 
 
 class Individual:
@@ -147,14 +155,23 @@ def score_text(text: str) -> float:
         occurrences_count[triplet] += 1
     score = 0
     for triplet, count in occurrences_count.items():
-        # todo : if a group of letters appears more frequently than in normal french it will be rewarded
         score += -abs(count / len(text) - SEQ_PROBA_TABLE.get(triplet, 0))
+    words = []
+    len_words = 0
+    for word in text.split(' '):
+        if len(word) > 3:
+            words.append(word)
+            len_words += 1
+    for word in words:
+        if word in POSSIBLE_WORDS:
+            score += 100 / len_words
     score = score
+    # todo : understand why its less than 100 when success
     return score
 
 
 def main():
-    with open('data/text_to_encrypt') as f:
+    with open('data/text_to_encrypt_2') as f:
         text = f.read()
     text = clean_text(text, DECYPHERED_STRINGS)
     cypher_table = build_random_cypher_table(DECYPHERED_STRINGS)
@@ -201,9 +218,9 @@ def test():
 
 
 if __name__ == '__main__':
-    random.seed(0)
+    random.seed(10)
     start = time.time()
     main()
     # test()
     print('\n', '-' * 50, round(time.time() - start, 4), sep='\n')
-    # todo : count the number of valid words in a given solution to improve scoring
+    # todo : allow to associate two different encrypted chars with one decrypted char
