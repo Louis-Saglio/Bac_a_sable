@@ -2,15 +2,18 @@ import os
 import pickle
 import random
 import time
-from statistics import mean
+from pprint import pprint
 from typing import Callable, Any
 
 
-DECYPHERED_STRINGS = "0123456789abcdefghijklmnopqrstuvwxyzàéèêîôâçùûï!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ ’œ"
+DECYPHERED_STRINGS = "abcdefghijklmnopqrstuvwxyzàéèêîôâçùûï!\"%&'()+,-./:;? ’œ"
 
 
 def clean_text(text: str, accepted: str) -> str:
     text = text.lower()
+    text = " ".join(text.split())
+    for to_replace, by in {'º': '°', '“': '"', '”': '"', '…': '...', '«': '"', '»': '"', '’': "'"}.items():
+        text = text.replace(to_replace, by)
     cleaned_text = []
     accepted_chars = set(accepted)
     for char in text:
@@ -151,14 +154,14 @@ def score_text(text: str) -> float:
 
 
 def main():
-    with open('data/tte_short_fr') as f:
+    with open('data/text_to_encrypt') as f:
         text = f.read()
     text = clean_text(text, DECYPHERED_STRINGS)
     cypher_table = build_random_cypher_table(DECYPHERED_STRINGS)
     cyphered_text = cypher_text(text, cypher_table)
     solution = evolve(
         text=cyphered_text,
-        pop_size=3000,
+        pop_size=300,
         duration=300,
         mutation_proba=0.9,
         selection_pressure=100,
@@ -174,8 +177,27 @@ def main():
 
 
 def test():
-    cypher_table = build_random_cypher_table(DECYPHERED_STRINGS)
-    build_random_individual(**{'c_strings': cypher_table.values(), 'd_strings': DECYPHERED_STRINGS})
+    to_remove = "…äü°ºæаñ}“”↑*—/‘ëï79()84536ûù2ôœî0«ç[]»1â_:ê’!?;zèàxjk-\"qé'ybvw.,gfpcmhdulronisate "
+    replace = {'º': '°', '“': '"', '”': '"', '…': '...', '«': '"', '»': '"', '’': "'"}
+    with open('data/text_fr') as f:
+        s = f.read()
+    with open('data/text_en') as f:
+        s += f.read()
+    # s = " ".join(s.lower().split('\n'))
+    s = clean_text(s, DECYPHERED_STRINGS)
+    letters = set(s)
+    print("".join(sorted(letters)))
+    count = {}
+    for letter in s:
+        if letter not in count:
+            count[letter] = 0
+        count[letter] += 1
+    letters = sorted(count.items(), key=lambda x: x[1])
+    pprint(letters)
+    letters = "".join([x[0] for x in letters])
+    print(letters)
+
+    # pprint(sorted(SEQ_PROBA_TABLE.items(), key=lambda x: x[1], reverse=True))
 
 
 if __name__ == '__main__':
